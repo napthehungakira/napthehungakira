@@ -2,164 +2,336 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nạp Thẻ Hùng Akira - Tra Cứu UID Free Fire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nạp Thẻ Hùng Akira - Nạp Kim Cương Free Fire</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
+
         body {
-            background-color: #121212;
-            color: #ffffff;
+            background-color: #f2f2f6;
+            padding: 15px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
         }
+
         .container {
-            background-color: #1e1e1e;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             width: 100%;
-            max-width: 400px;
-            text-align: center;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 20px;
         }
-        h2 {
-            margin-bottom: 20px;
-            color: #ff4757;
+
+        /* Card chung */
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            position: relative;
         }
+
+        .step-header {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 16px;
+        }
+
+        .step-number {
+            color: #e60000;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .card-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        /* Ô nhập liệu */
         .input-group {
-            margin-bottom: 15px;
+            position: relative;
+            margin-bottom: 12px;
         }
-        input[type="text"] {
+
+        .input-uid {
             width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #333;
-            background-color: #2b2b2b;
-            color: #fff;
+            padding: 15px 16px;
+            border: 1px solid #e5e5ea;
+            border-radius: 12px;
             font-size: 16px;
             outline: none;
+            color: #333;
+            transition: border-color 0.2s;
         }
-        button {
+
+        .input-uid:focus {
+            border-color: #ff0015;
+        }
+
+        .input-uid::placeholder {
+            color: #a1a1a6;
+        }
+
+        .btn-red {
             width: 100%;
-            padding: 12px;
-            background-color: #ff4757;
+            background-color: #ff0015;
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-bottom: 10px;
-        }
-        button:hover {
-            background-color: #e84118;
-        }
-        .btn-pay {
-            background-color: #2ed573;
-        }
-        .btn-pay:hover {
-            background-color: #26af5f;
-        }
-        #player {
-            margin-top: 15px;
-        }
-        .player-card {
-            background-color: #2b2b2b;
             padding: 15px;
-            border-radius: 6px;
-            text-align: left;
-            border-left: 4px solid #ff4757;
+            border-radius: 25px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-transform: uppercase;
         }
-        .player-card h3 {
-            color: #2ed573;
+
+        .btn-red:active {
+            background-color: #cc0011;
+        }
+
+        /* Bước 2: Gói Kim Cương */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .package-item {
+            border: 1.5px solid #e5e5ea;
+            border-radius: 14px;
+            padding: 18px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .package-item.active {
+            border-color: #ff0015;
+            background-color: #fff5f5;
+            box-shadow: 0 0 0 1px #ff0015;
+        }
+
+        .kc-amount {
+            color: #00aeef;
+            font-size: 19px;
+            font-weight: 800;
             margin-bottom: 8px;
         }
-        .player-card p {
-            margin: 4px 0;
-            color: #ccc;
+
+        .price-amount {
+            color: #000000;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* Bước 3: Phương thức thanh toán 2x2 */
+        .card-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .card-type-item {
+            border: 1.5px solid #e5e5ea;
+            border-radius: 14px;
+            padding: 16px 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            color: #000000;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .card-type-item.active {
+            border-color: #ff0015;
+            color: #ff0015;
+            background: #fff5f5;
+            box-shadow: 0 0 0 1px #ff0015;
+        }
+
+        /* Thông báo UID */
+        #user-info {
+            display: none;
+            margin-top: 10px;
+            padding: 12px;
+            background: #eef9ff;
+            border-radius: 10px;
+            color: #0075a2;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            border: 1px solid #cceeff;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: #8e8e93;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 350px) {
+            .kc-amount { font-size: 16px; }
+            .price-amount { font-size: 14px; }
+            .card-type-item { font-size: 14px; padding: 12px 8px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Tra Cứu UID Free Fire</h2>
-        
-        <div class="input-group">
-            <input type="text" id="uid" placeholder="Nhập UID Free Fire...">
-        </div>
-        
-        <button onclick="loginFF()">Kiểm Tra UID</button>
-        <button class="btn-pay" onclick="payNow()">Nạp Ngay (Demo)</button>
+<div class="container">
 
-        <div id="player"></div>
+    <!-- BƯỚC 1 -->
+    <div class="card" id="step-1">
+        <div class="step-header">
+            <div class="step-number">1</div>
+            <div class="card-title">Nhập UID Free Fire</div>
+        </div>
+        <div class="input-group">
+            <input type="number" id="uid-input" class="input-uid" placeholder="Nhập UID của bạn">
+        </div>
+        <button class="btn-red" onclick="xacNhanUID()">Đăng nhập</button>
+        <div id="user-info"></div>
     </div>
 
-    <script>
-        async function loginFF() {
-            const uid = document.getElementById("uid").value.trim();
-            const player = document.getElementById("player");
+    <!-- BƯỚC 2 -->
+    <div class="card" id="step-2">
+        <div class="step-header">
+            <div class="step-number">2</div>
+            <div class="card-title">Chọn gói kim cương</div>
+        </div>
+        <div class="packages-grid">
+            <div class="package-item" onclick="selectPackage(this, '50.000đ')">
+                <div class="kc-amount">2.830 💎</div>
+                <div class="price-amount">50.000đ</div>
+            </div>
+            <div class="package-item" onclick="selectPackage(this, '100.000đ')">
+                <div class="kc-amount">5.660 💎</div>
+                <div class="price-amount">100.000đ</div>
+            </div>
+            <div class="package-item" onclick="selectPackage(this, '200.000đ')">
+                <div class="kc-amount">11.320 💎</div>
+                <div class="price-amount">200.000đ</div>
+            </div>
+            <div class="package-item" onclick="selectPackage(this, '500.000đ')">
+                <div class="kc-amount">28.300 💎</div>
+                <div class="price-amount">500.000đ</div>
+            </div>
+        </div>
+    </div>
 
-            if (uid === "") {
-                alert("Vui lòng nhập UID");
-                return;
-            }
+    <!-- BƯỚC 3 -->
+    <div class="card" id="step-3">
+        <div class="step-header">
+            <div class="step-number">3</div>
+            <div class="card-title">Phương thức thanh toán</div>
+        </div>
+        
+        <div class="card-type-grid">
+            <div class="card-type-item active" onclick="selectCardType(this, 'Viettel')">Thẻ Viettel</div>
+            <div class="card-type-item" onclick="selectCardType(this, 'Garena')">Thẻ Garena</div>
+            <div class="card-type-item" onclick="selectCardType(this, 'MobiFone')">Thẻ MobiFone</div>
+            <div class="card-type-item" onclick="selectCardType(this, 'VinaPhone')">Thẻ VinaPhone</div>
+        </div>
 
-            player.innerHTML = `
-                <div class="player-card">
-                    <p>Đang kiểm tra UID...</p>
-                </div>
-            `;
+        <div class="input-group">
+            <input type="text" id="seri" class="input-uid" placeholder="Nhập Số Seri">
+        </div>
+        <div class="input-group">
+            <input type="text" id="pin" class="input-uid" placeholder="Nhập Mã Thẻ">
+        </div>
+        
+        <button class="btn-red" onclick="napThe()">NẠP NGAY</button>
+    </div>
 
-            try {
-                const response = await fetch("/api/player?uid=" + encodeURIComponent(uid));
+    <div class="footer-text">© 2026 NapTheHungAkira</div>
 
-                if (!response.ok) {
-                    throw new Error("Không thể kết nối máy chủ");
-                }
+</div>
 
-                const data = await response.json();
+<script>
+    let selectedPackagePrice = '';
+    let selectedCard = 'Viettel';
+    let isUidLoggedIn = false;
 
-                if (!data.success) {
-                    player.innerHTML = `
-                        <div class="player-card">
-                            <p>Không tìm thấy người chơi.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                player.innerHTML = `
-                    <div class="player-card">
-                        <h3>Tên: ${data.nickname}</h3>
-                        <p>UID: ${uid}</p>
-                        <p>Level: ${data.level ?? "Không có dữ liệu"}</p>
-                        <p>Rank: ${data.rank ?? "Không có dữ liệu"}</p>
-                    </div>
-                `;
-
-            } catch (error) {
-                player.innerHTML = `
-                    <div class="player-card">
-                        <p>Không thể kiểm tra UID lúc này (Cần kết nối API backend).</p>
-                    </div>
-                `;
-                console.error(error);
-            }
+    function xacNhanUID() {
+        const uidInput = document.getElementById('uid-input');
+        const uid = uidInput.value;
+        const userInfo = document.getElementById('user-info');
+        
+        if (!uid || uid.length < 8 || uid.length > 11) {
+            alert('Vui lòng nhập UID Free Fire hợp lệ (từ 8-11 số)!');
+            uidInput.focus();
+            return;
         }
 
-        function payNow() {
-            alert("Nạp thành công (Demo)");
+        userInfo.style.display = 'block';
+        userInfo.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>Hùng Akira (Lv.72)</b>`;
+        isUidLoggedIn = true;
+        
+        document.getElementById('step-2').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function selectPackage(element, price) {
+        document.querySelectorAll('.package-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+        selectedPackagePrice = price;
+    }
+
+    function selectCardType(element, cardName) {
+        document.querySelectorAll('.card-type-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+        selectedCard = cardName;
+    }
+
+    function napThe() {
+        const uid = document.getElementById('uid-input').value;
+        const seri = document.getElementById('seri').value;
+        const pin = document.getElementById('pin').value;
+
+        if (!isUidLoggedIn) {
+            alert('Vui lòng nhập UID và bấm Đăng nhập ở Bước 1 trước!');
+            document.getElementById('step-1').scrollIntoView({ behavior: 'smooth' });
+            return;
         }
-    </script>
+        
+        if (!selectedPackagePrice) {
+            alert('Vui lòng chọn một gói Kim cương ở Bước 2!');
+            document.getElementById('step-2').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        if (!seri || seri.length < 8) {
+            alert('Vui lòng nhập Số Seri thẻ hợp lệ!');
+            document.getElementById('seri').focus();
+            return;
+        }
+        if (!pin || pin.length < 8) {
+            alert('Vui lòng nhập Mã Thẻ hợp lệ!');
+            document.getElementById('pin').focus();
+            return;
+        }
+
+        alert(`Gửi thẻ thành công!\n\nUID: ${uid}\nLoại thẻ: ${selectedCard}\nGói chọn: ${selectedPackagePrice}\nHệ thống đang kiểm tra thẻ. Kim cương sẽ được cộng sau 1-3 phút nếu thẻ đúng.`);
+        
+        document.getElementById('seri').value = '';
+        document.getElementById('pin').value = '';
+    }
+</script>
 
 </body>
 </html>
