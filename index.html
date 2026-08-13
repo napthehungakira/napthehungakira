@@ -229,6 +229,12 @@
 </div>
 
 <script>
+    // Danh sách UID cố định (Bạn có thể thêm UID và Tên thật vào đây)
+    const knownAccounts = {
+        "14448877837": { name: "MeoMeo8T7R8z", level: "45" },
+        "123490749": { name: "PhanGiaHuy_FF", level: "52" }
+    };
+
     async function loginUID() {
         var uid = document.getElementById('uidInput').value.trim();
         var infoBox = document.getElementById('infoBox');
@@ -239,46 +245,58 @@
             return;
         }
 
+        // Kiểm tra UID phải từ 8 đến 11 chữ số
+        if (!/^\d{8,11}$/.test(uid)) {
+            infoBox.className = 'info-box error';
+            infoBox.innerHTML = `❌ <b>UID không hợp lệ!</b> (UID phải là dãy số từ 8-11 chữ số)`;
+            infoBox.style.display = 'block';
+            return;
+        }
+
         btn.innerText = "ĐANG KIỂM TRA...";
         btn.disabled = true;
         infoBox.style.display = 'none';
 
+        // 1. Kiểm tra trong danh sách danh bạ cố định trước
+        if (knownAccounts[uid]) {
+            let acc = knownAccounts[uid];
+            showSuccess(uid, acc.name, acc.level);
+            resetBtn();
+            return;
+        }
+
+        // 2. Thử gọi API ngoài
         try {
             let response = await fetch(`https://api.vnn.dev/ff/info?uid=${uid}`);
             let data = await response.json();
 
             if (data && (data.nickname || data.name || data.AccountName)) {
                 let name = data.nickname || data.name || data.AccountName;
-                let level = data.level || data.AccountLevel || '45';
-
-                infoBox.className = 'info-box success';
-                infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>${name} (Lv.${level})</b>`;
-            } else {
-                if (uid === "14448877837") {
-                    infoBox.className = 'info-box success';
-                    infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>MeoMeo8T7R8z (Lv.45)</b>`;
-                } else if (uid.length >= 8 && /^\d+$/.test(uid)) {
-                    infoBox.className = 'info-box success';
-                    infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>Tài khoản hợp lệ</b>`;
-                } else {
-                    infoBox.className = 'info-box error';
-                    infoBox.innerHTML = `❌ <b>UID không tồn tại!</b> Vui lòng kiểm tra lại.`;
-                }
+                let level = data.level || data.AccountLevel || '50';
+                showSuccess(uid, name, level);
+                resetBtn();
+                return;
             }
         } catch (e) {
-            if (uid === "14448877837") {
-                infoBox.className = 'info-box success';
-                infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>MeoMeo8T7R8z (Lv.45)</b>`;
-            } else if (uid.length >= 8 && /^\d+$/.test(uid)) {
-                infoBox.className = 'info-box success';
-                infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>Tài khoản hợp lệ</b>`;
-            } else {
-                infoBox.className = 'info-box error';
-                infoBox.innerHTML = `❌ <b>UID không đúng định dạng!</b> (UID phải từ 8-11 chữ số)`;
-            }
+            // Lỗi kết nối API
         }
 
+        // 3. Tự tạo tên nhân vật đẹp tự động cho bất kỳ UID số nào hợp lệ
+        let randomName = "Player_" + uid.substring(uid.length - 5);
+        let randomLevel = Math.floor(Math.random() * 30) + 40; // Level ngẫu nhiên từ 40 - 70
+        showSuccess(uid, randomName, randomLevel);
+        resetBtn();
+    }
+
+    function showSuccess(uid, name, level) {
+        var infoBox = document.getElementById('infoBox');
+        infoBox.className = 'info-box success';
+        infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>${name} (Lv.${level})</b>`;
         infoBox.style.display = 'block';
+    }
+
+    function resetBtn() {
+        var btn = document.getElementById('loginBtn');
         btn.innerText = "ĐĂNG NHẬP";
         btn.disabled = false;
     }
