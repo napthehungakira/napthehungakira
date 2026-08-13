@@ -229,10 +229,9 @@
 </div>
 
 <script>
-    // Danh sách UID cố định (Bạn có thể thêm UID và Tên thật vào đây)
+    // Danh sách UID đã xác minh sẵn tên + level
     const knownAccounts = {
-        "14448877837": { name: "MeoMeo8T7R8z", level: "45" },
-        "123490749": { name: "PhanGiaHuy_FF", level: "52" }
+        "14448877837": { name: "MeoMeo8T7R8z", level: "45" }
     };
 
     async function loginUID() {
@@ -245,19 +244,17 @@
             return;
         }
 
-        // Kiểm tra UID phải từ 8 đến 11 chữ số
+        // Kiểm tra UID phải từ 8 - 11 chữ số
         if (!/^\d{8,11}$/.test(uid)) {
-            infoBox.className = 'info-box error';
-            infoBox.innerHTML = `❌ <b>UID không hợp lệ!</b> (UID phải là dãy số từ 8-11 chữ số)`;
-            infoBox.style.display = 'block';
+            showError("❌ <b>UID không đúng định dạng!</b> (Độ dài UID phải từ 8-11 chữ số)");
             return;
         }
 
-        btn.innerText = "ĐANG KIỂM TRA...";
+        btn.innerText = "ĐANG ĐĂNG NHẬP...";
         btn.disabled = true;
         infoBox.style.display = 'none';
 
-        // 1. Kiểm tra trong danh sách danh bạ cố định trước
+        // 1. Kiểm tra trong danh sách UID có sẵn
         if (knownAccounts[uid]) {
             let acc = knownAccounts[uid];
             showSuccess(uid, acc.name, acc.level);
@@ -265,14 +262,14 @@
             return;
         }
 
-        // 2. Thử gọi API ngoài
+        // 2. Thử gọi API tra cứu online
         try {
             let response = await fetch(`https://api.vnn.dev/ff/info?uid=${uid}`);
             let data = await response.json();
 
             if (data && (data.nickname || data.name || data.AccountName)) {
                 let name = data.nickname || data.name || data.AccountName;
-                let level = data.level || data.AccountLevel || '50';
+                let level = data.level || data.AccountLevel || 'N/A';
                 showSuccess(uid, name, level);
                 resetBtn();
                 return;
@@ -281,10 +278,8 @@
             // Lỗi kết nối API
         }
 
-        // 3. Tự tạo tên nhân vật đẹp tự động cho bất kỳ UID số nào hợp lệ
-        let randomName = "Player_" + uid.substring(uid.length - 5);
-        let randomLevel = Math.floor(Math.random() * 30) + 40; // Level ngẫu nhiên từ 40 - 70
-        showSuccess(uid, randomName, randomLevel);
+        // 3. Nếu là UID hợp lệ khác nhưng không tra được tên -> Chỉ hiện xác nhận UID, KHÔNG bịa tên
+        showUIDOnly(uid);
         resetBtn();
     }
 
@@ -292,6 +287,20 @@
         var infoBox = document.getElementById('infoBox');
         infoBox.className = 'info-box success';
         infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>${name} (Lv.${level})</b>`;
+        infoBox.style.display = 'block';
+    }
+
+    function showUIDOnly(uid) {
+        var infoBox = document.getElementById('infoBox');
+        infoBox.className = 'info-box success';
+        infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b>`;
+        infoBox.style.display = 'block';
+    }
+
+    function showError(msg) {
+        var infoBox = document.getElementById('infoBox');
+        infoBox.className = 'info-box error';
+        infoBox.innerHTML = msg;
         infoBox.style.display = 'block';
     }
 
