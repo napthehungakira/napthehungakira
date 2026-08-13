@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nạp Thẻ Hùng Akira - Tra Cứu UID Free Fire</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #ff4757;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background-color: #2b2b2b;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #e84118;
+        }
+        .btn-pay {
+            background-color: #2ed573;
+        }
+        .btn-pay:hover {
+            background-color: #26af5f;
+        }
+        #player {
+            margin-top: 15px;
+        }
+        .player-card {
+            background-color: #2b2b2b;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: left;
+            border-left: 4px solid #ff4757;
+        }
+        .player-card h3 {
+            color: #2ed573;
+            margin-bottom: 8px;
+        }
+        .player-card p {
+            margin: 4px 0;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Tra Cứu UID Free Fire</h2>
+        
+        <div class="input-group">
+            <input type="text" id="uid" placeholder="Nhập UID Free Fire...">
+        </div>
+        
+        <button onclick="loginFF()">Kiểm Tra UID</button>
+        <button class="btn-pay" onclick="payNow()">Nạp Ngay (Demo)</button>
+
+        <div id="player"></div>
+    </div>
+
+    <script>
+        async function loginFF() {
+            const uid = document.getElementById("uid").value.trim();
+            const player = document.getElementById("player");
+
+            if (uid === "") {
+                alert("Vui lòng nhập UID");
+                return;
+            }
+
+            player.innerHTML = `
+                <div class="player-card">
+                    <p>Đang kiểm tra UID...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch("/api/player?uid=" + encodeURIComponent(uid));
+
+                if (!response.ok) {
+                    throw new Error("Không thể kết nối máy chủ");
+                }
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    player.innerHTML = `
+                        <div class="player-card">
+                            <p>Không tìm thấy người chơi.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                player.innerHTML = `
+                    <div class="player-card">
+                        <h3>Tên: ${data.nickname}</h3>
+                        <p>UID: ${uid}</p>
+                        <p>Level: ${data.level ?? "Không có dữ liệu"}</p>
+                        <p>Rank: ${data.rank ?? "Không có dữ liệu"}</p>
+                    </div>
+                `;
+
+            } catch (error) {
+                player.innerHTML = `
+                    <div class="player-card">
+                        <p>Không thể kiểm tra UID lúc này (Cần kết nối API backend).</p>
+                    </div>
+                `;
+                console.error(error);
+            }
+        }
+
+        function payNow() {
+            alert("Nạp thành công (Demo)");
+        }
+    </script>
+
+</body>
+</html>
