@@ -30,6 +30,38 @@
             gap: 15px;
         }
 
+        /* KHUNG BANNER / ADMIN HEADER */
+        .admin-card {
+            background: linear-gradient(135deg, #d32f2f, #9a0007);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        }
+
+        .admin-avatar {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: 3px solid #ffffff;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .admin-info h2 {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .admin-info p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
         .card {
             background-color: #ffffff;
             border-radius: 16px;
@@ -172,7 +204,6 @@
             font-weight: 600;
         }
 
-        /* Bảng lịch sử nạp */
         .history-table {
             width: 100%;
             border-collapse: collapse;
@@ -204,6 +235,16 @@
 <body>
 
 <div class="container">
+
+    <!-- BANNER ADMIN HÙNG AKIRA CÓ ANH ĐẠI DIỆN -->
+    <div class="admin-card">
+        <!-- Thay link ảnh của bạn vào src bên dưới -->
+        <img src="https://i.imgur.com/2Xy3K9B.jpg" alt="Hùng Akira" class="admin-avatar">
+        <div class="admin-info">
+            <h2>HÙNG AKIRA</h2>
+            <p>Hệ Thống Nạp Kim Cương Free Fire Uy Tín & Tự Động 24/7</p>
+        </div>
+    </div>
 
     <!-- BƯỚC 1 -->
     <div class="card">
@@ -300,7 +341,6 @@
 </div>
 
 <script>
-    // 1. CẤU HÌNH ĐỘ DÀI THẺ CHUẨN
     const CARD_RULES = {
         VIETTEL:   { serial: [11, 14], code: [13, 15], maxSerial: 14, maxCode: 15 },
         MOBIFONE:  { serial: [15],     code: [12],     maxSerial: 15, maxCode: 12 },
@@ -312,7 +352,6 @@
         "14448877837": { name: "MeoMeo8T7R8z", level: "45" }
     };
 
-    // THÔNG TIN API TỪ TÀI KHOẢN CỦA BẠN
     const PARTNER_ID = "3319779279"; 
     const PARTNER_KEY = "7efe22a8ac0d75613fef460fd53a851d";
 
@@ -391,7 +430,7 @@
 
     async function submitNap() {
         var uid = document.getElementById('uidInput').value.trim();
-        var code = document.getElementById('cardCode').value.replace(/\s+/g, ''); // Tự loại bỏ khoảng trắng
+        var code = document.getElementById('cardCode').value.replace(/\s+/g, '');
         var serial = document.getElementById('cardSerial').value.replace(/\s+/g, ''); 
 
         var napInfoBox = document.getElementById('napInfoBox');
@@ -412,13 +451,12 @@
             return;
         }
 
-        var selectedOption = document.querySelector('.card:nth-child(2) .option-card.active');
-        var selectedCard = document.querySelector('.card:nth-child(3) .option-card.active');
+        var selectedOption = document.querySelector('.card:nth-child(3) .option-card.active');
+        var selectedCard = document.querySelector('.card:nth-child(4) .option-card.active');
 
         var amount = selectedOption ? selectedOption.getAttribute('data-amount') : "50000";
         var telco = selectedCard ? selectedCard.getAttribute('data-telco') : "VIETTEL";
 
-        // Kiểm tra độ dài thẻ
         var rule = CARD_RULES[telco];
         if (rule) {
             if (!rule.serial.includes(serial.length)) {
@@ -484,7 +522,6 @@
         btn.disabled = false;
     }
 
-    // Quản lý Lịch sử nạp
     function saveHistory(telco, amount) {
         var history = JSON.parse(localStorage.getItem('nap_history') || '[]');
         var now = new Date();
@@ -496,7 +533,7 @@
             time: timeStr
         });
 
-        if(history.length > 5) history.pop(); // Lưu tối đa 5 đơn gần nhất
+        if(history.length > 5) history.pop();
         localStorage.setItem('nap_history', JSON.stringify(history));
         renderHistory();
     }
