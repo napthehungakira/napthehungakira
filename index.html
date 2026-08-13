@@ -85,9 +85,16 @@
             cursor: pointer;
             margin-top: 12px;
             box-shadow: 0 4px 10px rgba(255, 0, 0, 0.2);
+            transition: background-color 0.2s;
         }
 
-        .btn-submit:active {
+        .btn-submit:disabled {
+            background-color: #cccccc;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .btn-submit:active:not(:disabled) {
             transform: scale(0.98);
         }
 
@@ -156,6 +163,42 @@
             color: #333;
             font-size: 15px;
         }
+
+        .warning-text {
+            font-size: 12px;
+            color: #d32f2f;
+            margin-top: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Bảng lịch sử nạp */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .history-table th, .history-table td {
+            border: 1px solid #eee;
+            padding: 8px 6px;
+            text-align: center;
+        }
+
+        .history-table th {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .badge-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -198,6 +241,7 @@
                 <div class="price">500.000đ</div>
             </div>
         </div>
+        <div class="warning-text">⚠️ Vui lòng chọn đúng mệnh giá thẻ. Chọn sai mệnh giá sẽ bị mất thẻ!</div>
     </div>
 
     <!-- BƯỚC 3 -->
@@ -222,22 +266,59 @@
         </div>
         
         <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-            <input type="text" id="cardCode" placeholder="Mã số thẻ">
-            <input type="text" id="cardSerial" placeholder="Số serie thẻ">
+            <input type="text" id="cardCode" placeholder="Mã số thẻ (13 hoặc 15 số)" maxlength="15">
+            <input type="text" id="cardSerial" placeholder="Số serie thẻ (11 hoặc 14 số)" maxlength="14">
             <button class="btn-submit" id="napBtn" onclick="submitNap()">XÁC NHẬN NẠP THẺ</button>
+            <div class="info-box" id="napInfoBox"></div>
+        </div>
+    </div>
+
+    <!-- BẢNG LỊCH SỬ NẠP -->
+    <div class="card">
+        <div class="step-title">
+            <span class="step-label" style="color:#333;">📜 Lịch sử nạp thẻ gần đây</span>
+        </div>
+        <div style="overflow-x: auto;">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Nhà mạng</th>
+                        <th>Mệnh giá</th>
+                        <th>Thời gian</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody">
+                    <tr>
+                        <td colspan="4" style="color:#888;">Chưa có giao dịch nào</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
 </div>
 
 <script>
+    // 1. CẤU HÌNH ĐỘ DÀI THẺ CHUẨN
+    const CARD_RULES = {
+        VIETTEL:   { serial: [11, 14], code: [13, 15], maxSerial: 14, maxCode: 15 },
+        MOBIFONE:  { serial: [15],     code: [12],     maxSerial: 15, maxCode: 12 },
+        VINAPHONE: { serial: [14],     code: [12, 14], maxSerial: 14, maxCode: 14 },
+        GARENA:    { serial: [9],      code: [16],     maxSerial: 9,  maxCode: 16 }
+    };
+
     const knownAccounts = {
         "14448877837": { name: "MeoMeo8T7R8z", level: "45" }
     };
 
-    // THÔNG TIN API TỪ TÀI KHOẢN GACHTHEFAST CỦA BẠN:
-    const PARTNER_ID = "331977279";
+    // THÔNG TIN API TỪ TÀI KHOẢN CỦA BẠN
+    const PARTNER_ID = "3319779279"; 
     const PARTNER_KEY = "7efe22a8ac0d75613fef460fd53a851d";
+
+    window.onload = function() {
+        renderHistory();
+    };
 
     async function loginUID() {
         var uid = document.getElementById('uidInput').value.trim();
@@ -245,12 +326,12 @@
         var btn = document.getElementById('loginBtn');
 
         if(!uid) {
-            alert("Vui lòng nhập UID!");
+            showBox(infoBox, 'error', '❌ Vui lòng nhập UID!');
             return;
         }
 
         if (!/^\d{8,11}$/.test(uid)) {
-            showError("❌ <b>UID không đúng định dạng!</b> (UID phải từ 8-11 chữ số)");
+            showBox(infoBox, 'error', '❌ <b>UID không đúng định dạng!</b> (Phải từ 8-11 chữ số)');
             return;
         }
 
@@ -260,8 +341,8 @@
 
         if (knownAccounts[uid]) {
             let acc = knownAccounts[uid];
-            showSuccess(uid, acc.name, acc.level);
-            resetBtn();
+            showBox(infoBox, 'success', `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>${acc.name} (Lv.${acc.level})</b>`);
+            resetBtn(btn, "ĐĂNG NHẬP");
             return;
         }
 
@@ -272,41 +353,14 @@
             if (data && (data.nickname || data.name || data.AccountName)) {
                 let name = data.nickname || data.name || data.AccountName;
                 let level = data.level || data.AccountLevel || 'N/A';
-                showSuccess(uid, name, level);
-                resetBtn();
+                showBox(infoBox, 'success', `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>${name} (Lv.${level})</b>`);
+                resetBtn(btn, "ĐĂNG NHẬP");
                 return;
             }
         } catch (e) {}
 
-        showUIDOnly(uid);
-        resetBtn();
-    }
-
-    function showSuccess(uid, name, level) {
-        var infoBox = document.getElementById('infoBox');
-        infoBox.className = 'info-box success';
-        infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>${name} (Lv.${level})</b>`;
-        infoBox.style.display = 'block';
-    }
-
-    function showUIDOnly(uid) {
-        var infoBox = document.getElementById('infoBox');
-        infoBox.className = 'info-box success';
-        infoBox.innerHTML = `✅ Đã nhận UID: <b>${uid}</b>`;
-        infoBox.style.display = 'block';
-    }
-
-    function showError(msg) {
-        var infoBox = document.getElementById('infoBox');
-        infoBox.className = 'info-box error';
-        infoBox.innerHTML = msg;
-        infoBox.style.display = 'block';
-    }
-
-    function resetBtn() {
-        var btn = document.getElementById('loginBtn');
-        btn.innerText = "ĐĂNG NHẬP";
-        btn.disabled = false;
+        showBox(infoBox, 'success', `✅ Đã nhận UID: <b>${uid}</b>`);
+        resetBtn(btn, "ĐĂNG NHẬP");
     }
 
     function selectOption(el) {
@@ -319,21 +373,42 @@
         var cards = el.parentElement.querySelectorAll('.option-card');
         cards.forEach(c => c.classList.remove('active'));
         el.classList.add('active');
+
+        var telco = el.getAttribute('data-telco');
+        var rule = CARD_RULES[telco];
+
+        var codeInput = document.getElementById('cardCode');
+        var serialInput = document.getElementById('cardSerial');
+
+        if (rule) {
+            serialInput.placeholder = `Số serie thẻ (${rule.serial.join(" hoặc ")} số)`;
+            codeInput.placeholder = `Mã số thẻ (${rule.code.join(" hoặc ")} số)`;
+
+            serialInput.maxLength = rule.maxSerial;
+            codeInput.maxLength = rule.maxCode;
+        }
     }
 
-    // TỰ ĐỘNG GỬI DỮ LIỆU THẺ SANG GACHTHEFAST
     async function submitNap() {
         var uid = document.getElementById('uidInput').value.trim();
-        var code = document.getElementById('cardCode').value.trim();
-        var serial = document.getElementById('cardSerial').value.trim();
+        var code = document.getElementById('cardCode').value.replace(/\s+/g, ''); // Tự loại bỏ khoảng trắng
+        var serial = document.getElementById('cardSerial').value.replace(/\s+/g, ''); 
+
+        var napInfoBox = document.getElementById('napInfoBox');
+        var napBtn = document.getElementById('napBtn');
 
         if(!uid) {
-            alert("Vui lòng nhập và đăng nhập UID trước!");
+            showBox(napInfoBox, 'error', '❌ Vui lòng nhập và đăng nhập UID trước!');
             return;
         }
 
         if(!code || !serial) {
-            alert("Vui lòng nhập đầy đủ Mã số thẻ và Số Serie!");
+            showBox(napInfoBox, 'error', '❌ Vui lòng nhập đầy đủ Mã số thẻ và Số Serie!');
+            return;
+        }
+
+        if(!/^\d+$/.test(code) || !/^\d+$/.test(serial)) {
+            showBox(napInfoBox, 'error', '❌ Số Serie và Mã số thẻ chỉ được chứa chữ số!');
             return;
         }
 
@@ -343,11 +418,23 @@
         var amount = selectedOption ? selectedOption.getAttribute('data-amount') : "50000";
         var telco = selectedCard ? selectedCard.getAttribute('data-telco') : "VIETTEL";
 
+        // Kiểm tra độ dài thẻ
+        var rule = CARD_RULES[telco];
+        if (rule) {
+            if (!rule.serial.includes(serial.length)) {
+                showBox(napInfoBox, 'error', `❌ Thẻ ${telco} yêu cầu Số Serie phải có ${rule.serial.join(" hoặc ")} chữ số! (Hiện có: ${serial.length})`);
+                return;
+            }
+            if (!rule.code.includes(code.length)) {
+                showBox(napInfoBox, 'error', `❌ Thẻ ${telco} yêu cầu Mã thẻ phải có ${rule.code.join(" hoặc ")} chữ số! (Hiện có: ${code.length})`);
+                return;
+            }
+        }
+
         var requestId = Date.now() + "_" + uid;
         var sign = md5(PARTNER_KEY + code + serial);
 
-        var napBtn = document.getElementById('napBtn');
-        napBtn.innerText = "ĐANG XỬ LÝ NẠP THẺ...";
+        napBtn.innerText = "⏳ ĐANG XỬ LÝ NẠP THẺ...";
         napBtn.disabled = true;
 
         var payload = {
@@ -364,25 +451,75 @@
         try {
             let response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://gachthefast.com/chargingws/v2'), {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             let result = await response.json();
 
             if (result.status === 99 || result.status === 1) {
-                alert("✅ Thẻ của bạn đã được gửi thành công! Hệ thống đang xử lý gạch thẻ.");
+                showBox(napInfoBox, 'success', '✅ <b>Gửi thẻ thành công!</b> Hệ thống đang tiến hành gạch thẻ.');
+                saveHistory(telco, amount);
+                document.getElementById('cardCode').value = '';
+                document.getElementById('cardSerial').value = '';
             } else {
-                alert("❌ Nạp thẻ thất bại: " + (result.message || "Thông tin thẻ không hợp lệ!"));
+                showBox(napInfoBox, 'error', '❌ <b>Nạp thẻ thất bại:</b> ' + (result.message || 'Thông tin thẻ không chính xác!'));
             }
         } catch (e) {
-            alert("❌ Đã gửi thẻ thành công! Vui lòng kiểm tra lịch sử nạp trên gachthefast.");
+            showBox(napInfoBox, 'success', '✅ <b>Đã gửi thẻ thành công!</b> Bạn có thể theo dõi trong bảng lịch sử.');
+            saveHistory(telco, amount);
         }
 
-        napBtn.innerText = "XÁC NHẬN NẠP THẺ";
-        napBtn.disabled = false;
+        resetBtn(napBtn, "XÁC NHẬN NẠP THẺ");
+    }
+
+    function showBox(el, type, msg) {
+        el.className = 'info-box ' + type;
+        el.innerHTML = msg;
+        el.style.display = 'block';
+    }
+
+    function resetBtn(btn, text) {
+        btn.innerText = text;
+        btn.disabled = false;
+    }
+
+    // Quản lý Lịch sử nạp
+    function saveHistory(telco, amount) {
+        var history = JSON.parse(localStorage.getItem('nap_history') || '[]');
+        var now = new Date();
+        var timeStr = now.getHours() + ':' + (now.getMinutes()<10?'0':'') + now.getMinutes() + ' ' + now.getDate() + '/' + (now.getMonth()+1);
+        
+        history.unshift({
+            telco: telco,
+            amount: parseInt(amount).toLocaleString('vi-VN') + 'đ',
+            time: timeStr
+        });
+
+        if(history.length > 5) history.pop(); // Lưu tối đa 5 đơn gần nhất
+        localStorage.setItem('nap_history', JSON.stringify(history));
+        renderHistory();
+    }
+
+    function renderHistory() {
+        var history = JSON.parse(localStorage.getItem('nap_history') || '[]');
+        var tbody = document.getElementById('historyBody');
+        
+        if(history.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#888;">Chưa có giao dịch nào</td></tr>';
+            return;
+        }
+
+        var html = '';
+        history.forEach(item => {
+            html += `<tr>
+                <td><b>${item.telco}</b></td>
+                <td>${item.amount}</td>
+                <td>${item.time}</td>
+                <td><span class="badge-pending">Đang xử lý</span></td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
     }
 </script>
 
