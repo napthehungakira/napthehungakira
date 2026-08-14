@@ -349,7 +349,8 @@
         "14448877837": { name: "MeoMeo8T7R8z", level: "45" }
     };
 
-    const PARTNER_ID = "79073655604"; 
+    // Đã thay đổi PARTNER_ID thành Mã ví điện tử "0025125147" theo đúng cấu hình API của bạn
+    const PARTNER_ID = "0025125147"; 
     const PARTNER_KEY = "b93a7302687c92156e6e57d6e70b7fa0";
 
     window.onload = function() {
@@ -492,18 +493,15 @@
 
             let result = await response.json();
 
-            // Xử lý đúng trạng thái trả về từ API
             if (result.status === 99 || result.status === 1) {
                 showBox(napInfoBox, 'success', '✅ <b>Gửi thẻ thành công!</b> Hệ thống đang tiến hành gạch thẻ.');
                 saveHistory(telco, amount);
                 document.getElementById('cardCode').value = '';
                 document.getElementById('cardSerial').value = '';
             } else {
-                // Hiển thị chính xác lỗi do nhà cung cấp hoặc API trả về
                 showBox(napInfoBox, 'error', '❌ <b>Nạp thẻ thất bại:</b> ' + (result.message || 'Lỗi không xác định từ hệ thống gạch thẻ!'));
             }
         } catch (e) {
-            // ĐÃ KHẮC PHỤC: Lỗi kết nối/proxy/mạng tuyệt đối KHÔNG được báo thành công giả mạo nữa
             showBox(napInfoBox, 'error', '❌ <b>Lỗi kết nối:</b> Không thể kết nối tới cổng thanh toán. Vui lòng thử lại sau!');
         }
 
