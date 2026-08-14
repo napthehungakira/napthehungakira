@@ -30,7 +30,6 @@
             gap: 15px;
         }
 
-        /* KHUNG BANNER / ADMIN HEADER */
         .admin-card {
             background: linear-gradient(135deg, #d32f2f, #9a0007);
             border-radius: 16px;
@@ -236,7 +235,7 @@
 
 <div class="container">
 
-    <!-- BANNER ADMIN HÙNG AKIRA CÓ ẢNH ĐẠI DIỆN -->
+    <!-- BANNER ADMIN HÙNG AKIRA -->
     <div class="admin-card">
         <img src="https://i.imgur.com/2Xy3K9B.jpg" alt="Hùng Akira" class="admin-avatar">
         <div class="admin-info">
@@ -253,7 +252,6 @@
         </div>
         <input type="text" id="uidInput" placeholder="Nhập UID của bạn tại đây...">
         <button class="btn-submit" id="loginBtn" onclick="loginUID()">ĐĂNG NHẬP</button>
-        
         <div class="info-box" id="infoBox"></div>
     </div>
 
@@ -351,7 +349,6 @@
         "14448877837": { name: "MeoMeo8T7R8z", level: "45" }
     };
 
-    // Thông tin API chuẩn của TheSieuRe
     const PARTNER_ID = "79073655604"; 
     const PARTNER_KEY = "b93a7302687c92156e6e57d6e70b7fa0";
 
@@ -495,17 +492,19 @@
 
             let result = await response.json();
 
+            // Xử lý đúng trạng thái trả về từ API
             if (result.status === 99 || result.status === 1) {
                 showBox(napInfoBox, 'success', '✅ <b>Gửi thẻ thành công!</b> Hệ thống đang tiến hành gạch thẻ.');
                 saveHistory(telco, amount);
                 document.getElementById('cardCode').value = '';
                 document.getElementById('cardSerial').value = '';
             } else {
-                showBox(napInfoBox, 'error', '❌ <b>Nạp thẻ thất bại:</b> ' + (result.message || 'Thông tin thẻ không chính xác!'));
+                // Hiển thị chính xác lỗi do nhà cung cấp hoặc API trả về
+                showBox(napInfoBox, 'error', '❌ <b>Nạp thẻ thất bại:</b> ' + (result.message || 'Lỗi không xác định từ hệ thống gạch thẻ!'));
             }
         } catch (e) {
-            showBox(napInfoBox, 'success', '✅ <b>Đã gửi thẻ thành công!</b> Bạn có thể theo dõi trong bảng lịch sử.');
-            saveHistory(telco, amount);
+            // ĐÃ KHẮC PHỤC: Lỗi kết nối/proxy/mạng tuyệt đối KHÔNG được báo thành công giả mạo nữa
+            showBox(napInfoBox, 'error', '❌ <b>Lỗi kết nối:</b> Không thể kết nối tới cổng thanh toán. Vui lòng thử lại sau!');
         }
 
         resetBtn(napBtn, "XÁC NHẬN NẠP THẺ");
