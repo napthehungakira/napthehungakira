@@ -17,7 +17,7 @@
         .step-number { color: #c73832; font-size: 40px; font-weight: bold; }
         input { width: 100%; padding: 20px; border: 2px solid #ddd; border-radius: 22px; font-size: 19px; outline: none; margin-bottom: 18px; }
         input:focus { border-color: #d33b35; }
-        .login-btn { width: 100%; border: none; border-radius: 40px; padding: 20px; background: #f52f24; color: white; font-size: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(245,47,36,0.25); }
+        .login-btn { width: 100%; border: none; border-radius: 40px; padding: 20px; background: #f52f24; color: white; font-size: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(245,47,36,0.25); transition: 0.3s; }
         .packages { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .package { background: white; border: 2px solid #ddd; border-radius: 22px; padding: 24px 10px; text-align: center; cursor: pointer; transition: 0.2s; }
         .package.selected { border-color: #c93832; background: #fff7f7; }
@@ -50,7 +50,7 @@
             <span>Nhập UID Free Fire</span>
         </div>
         <input type="text" id="uid" placeholder="Nhập UID của bạn tại đây..." inputmode="numeric">
-        <button class="login-btn" onclick="checkUID()">ĐĂNG NHẬP</button>
+        <button id="loginBtn" class="login-btn" onclick="checkUID()">ĐĂNG NHẬP</button>
     </div>
 
     <!-- BƯỚC 2 -->
@@ -97,7 +97,7 @@
             <input type="text" id="serial" placeholder="Nhập serial thẻ...">
         </div>
         <button class="submit-btn" onclick="submitOrder()">XÁC NHẬN NẠP</button>
-        <div class="result" id="result" style="display:none;"></div>
+        <div class="result" id="result"></div>
     </div>
 
     <footer>© 2026 Hùng Akira<br>Website nạp kim cương Free Fire</footer>
@@ -106,14 +106,24 @@
 <script>
     let selectedPackage = { amount: "50000", diamond: "2.830 kim cương", price: "50.000đ" };
     let selectedTelco = "VIETTEL";
+    let isUidVerified = false;
 
     function checkUID() {
-        const uid = document.getElementById("uid").value.trim();
+        const uidInput = document.getElementById("uid");
+        const loginBtn = document.getElementById("loginBtn");
+        const uid = uidInput.value.trim();
+
         if (!uid || !/^[0-9]+$/.test(uid)) {
             alert("Vui lòng nhập UID hợp lệ (chỉ chứa số).");
             return;
         }
-        alert("Đã xác thực UID thành công: " + uid);
+
+        isUidVerified = true;
+        loginBtn.style.background = "linear-gradient(135deg, #28a745, #20c997)";
+        loginBtn.style.boxShadow = "0 8px 20px rgba(40, 167, 69, 0.3)";
+        loginBtn.innerHTML = "✅ ĐÃ XÁC THỰC UID (" + uid + ")";
+        uidInput.disabled = true;
+        uidInput.style.background = "#e9ecef";
     }
 
     function selectPackage(element, amount, diamond, price) {
@@ -134,8 +144,8 @@
         const serial = document.getElementById("serial").value.trim();
         const result = document.getElementById("result");
 
-        if (!uid || !/^[0-9]+$/.test(uid)) {
-            alert("Vui lòng nhập UID Free Fire!");
+        if (!isUidVerified || !uid) {
+            alert("Vui lòng nhập và bấm ĐĂNG NHẬP UID trước!");
             return;
         }
         if (!cardCode || !serial) {
@@ -148,7 +158,6 @@
         result.style.color = "#20752b";
         result.innerHTML = "Đang gửi thẻ lên hệ thống xử lý, vui lòng chờ...";
 
-        // Gửi dữ liệu qua file api.php trên cùng server của bạn
         fetch('api.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -156,9 +165,8 @@
         })
         .then(res => res.json())
         .then(data => {
-            // Dựa vào trạng thái trả về của The9p (Status: 1 là thành công, 99 là chờ xử lý, v.v.)
             if (data.status == 1) {
-                result.innerHTML = `✅ Nạp thẻ thành công!<br>Gói: ${selectedPackage.diamond}<br>Thực nhận: ${data.amount || selectedPackage.price}`;
+                result.innerHTML = `✅ Nạp thẻ thành công!<br>UID: ${uid}<br>Gói: ${selectedPackage.diamond}<br>Thực nhận: ${data.amount || selectedPackage.price}`;
             } else if (data.status == 99) {
                 result.innerHTML = `⏳ Thẻ đang chờ hệ thống duyệt hoặc chờ nhà mạng trả kết quả.`;
             } else {
