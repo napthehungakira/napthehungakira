@@ -8,11 +8,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// Sử dụng đúng Partner ID và Partner Key từ trang quản trị The9p của bạn
+// Thông tin tài khoản The9p của bạn
 const PARTNER_ID = "85251846982";
 const PARTNER_KEY = "43092bddb54714b17e52d92047f3868c";
 
-// Endpoint nhận dữ liệu từ giao diện web của bạn
 app.post('/api/nap-the', async (req, res) => {
     try {
         const { telco, code, serial, amount, uid } = req.body;
@@ -21,10 +20,12 @@ app.post('/api/nap-the', async (req, res) => {
             return res.json({ status: 0, message: 'Vui lòng nhập đầy đủ thông tin!' });
         }
 
-        const request_id = "FF_" + Date.now() + Math.floor(Math.random() * 900 + 100);
-        const command = "charging";
+        const request_id = "TBH_" + Date.now() + Math.floor(Math.random() * 900 + 100);
+        
+        // Đổi lệnh từ "charging" sang "sendcard" đúng với loại API "Gửi bán thẻ hộ" của bạn
+        const command = "sendcard";
 
-        // Tạo chữ ký (signature) bảo mật bằng thuật toán MD5
+        // Công thức tạo chữ ký sign chuẩn cho Gửi bán thẻ hộ
         const rawSign = PARTNER_KEY + code + command + PARTNER_ID + request_id + serial + telco;
         const sign = crypto.createHash('md5').update(rawSign).digest('hex');
 
@@ -39,7 +40,7 @@ app.post('/api/nap-the', async (req, res) => {
             sign
         });
 
-        // Gửi request sang hệ thống The9p
+        // Gửi yêu cầu sang API The9p
         const response = await axios.post('https://www.the9p.com/chargingws/v2', params);
         return res.json(response.data);
 
