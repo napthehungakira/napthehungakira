@@ -334,7 +334,7 @@ footer{
         </div>
 
         <div class="info">
-            Giao diện đang chạy trên GitHub Pages (Web tĩnh). Khi bấm xác nhận, hệ thống sẽ hiển thị mô phỏng thông tin giao dịch của bạn.
+            Hệ thống đã kết nối trực tiếp với API server trên Render của bạn.
         </div>
 
         <button id="submitBtn" class="submit-btn" onclick="submitOrder()">XÁC NHẬN NẠP</button>
@@ -410,16 +410,37 @@ function submitOrder(){
     result.style.display = "block";
     result.style.background = "#fff8e1";
     result.style.color = "#795500";
-    result.innerHTML = `⏳ Đang xử lý yêu cầu...<br><br><b>UID:</b> ${escapeHTML(uid)}<br><b>Gói:</b> ${escapeHTML(selectedPackage.diamond)}<br><b>Nhà mạng:</b> ${escapeHTML(selectedTelco)}<br><b>Mã thẻ:</b> ${escapeHTML(cardCode)}`;
+    result.innerHTML = `⏳ Đang gửi yêu cầu nạp thẻ lên hệ thống...`;
 
     submitBtn.disabled = true;
 
-    setTimeout(function(){
+    // Gửi dữ liệu thật tới server Render của bạn
+    fetch('https://napthehungakira.onrender.com/api/nap-the', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            uid: uid,
+            telco: selectedTelco,
+            code: cardCode,
+            serial: serial,
+            amount: selectedPackage.amount
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
         submitBtn.disabled = false;
         result.style.background = "#eefbf0";
         result.style.color = "#20752b";
-        result.innerHTML = `✅ Gửi yêu cầu thành công!<br>UID: ${escapeHTML(uid)}<br>Gói: ${escapeHTML(selectedPackage.diamond)}<br>Thực nhận: ${escapeHTML(selectedPackage.price)}`;
-    }, 1500);
+        result.innerHTML = `✅ Phản hồi: ${escapeHTML(data.message || 'Đã gửi thẻ thành công!')}`;
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        result.style.background = "#fde8e8";
+        result.style.color = "#c93832";
+        result.innerHTML = `❌ Lỗi kết nối đến server: ${escapeHTML(error.message)}`;
+    });
 }
 
 function escapeHTML(value){
