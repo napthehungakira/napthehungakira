@@ -37,10 +37,11 @@ app.post('/charging', async (req, res) => {
         });
 
         const response = await axios.post('https://www.the9p.com/chargingws/v2', params);
-        res.json(response.data);
+        return res.json(response.data);
 
     } catch (error) {
-        res.json({ status: 0, message: 'Lỗi kết nối máy chủ thanh toán!' });
+        console.error("Lỗi server:", error.message);
+        return res.json({ status: 0, message: 'Lỗi kết nối đến cổng thanh toán The9p!' });
     }
 });
 
