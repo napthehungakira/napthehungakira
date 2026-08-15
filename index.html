@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Nạp Thẻ Hùng Akira – Nạp Kim Cương Free Fire</title>
-    <!-- Thư viện MD5 để tạo chữ ký API bảo mật -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont,
+                "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #f2f2f6;
+            background: #f2f2f6;
             padding: 15px;
             display: flex;
             justify-content: center;
@@ -29,6 +30,10 @@
             flex-direction: column;
             gap: 15px;
         }
+
+        /* =========================
+           ADMIN
+        ========================= */
 
         .admin-card {
             background: linear-gradient(135deg, #d32f2f, #9a0007);
@@ -44,10 +49,12 @@
         .admin-avatar {
             width: 75px;
             height: 75px;
+            min-width: 75px;
             border-radius: 50%;
-            border: 3px solid #ffffff;
+            border: 3px solid white;
             object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            object-position: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
 
         .admin-info h2 {
@@ -59,13 +66,18 @@
             font-size: 13px;
             opacity: 0.9;
             margin-top: 3px;
+            line-height: 1.4;
         }
 
+        /* =========================
+           CARD
+        ========================= */
+
         .card {
-            background-color: #ffffff;
+            background: white;
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .step-title {
@@ -88,6 +100,10 @@
             font-size: 16px;
         }
 
+        /* =========================
+           INPUT
+        ========================= */
+
         input[type="text"] {
             width: 100%;
             padding: 14px 16px;
@@ -95,19 +111,23 @@
             border-radius: 12px;
             font-size: 16px;
             outline: none;
-            transition: border-color 0.2s;
-            background-color: #fafafa;
+            transition: 0.2s;
+            background: #fafafa;
         }
 
         input[type="text"]:focus {
             border-color: #d32f2f;
-            background-color: #fff;
+            background: white;
         }
+
+        /* =========================
+           BUTTON
+        ========================= */
 
         .btn-submit {
             width: 100%;
             padding: 14px;
-            background-color: #ff0000;
+            background: #ff0000;
             color: white;
             border: none;
             border-radius: 25px;
@@ -115,12 +135,12 @@
             font-weight: 700;
             cursor: pointer;
             margin-top: 12px;
-            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.2);
-            transition: background-color 0.2s;
+            box-shadow: 0 4px 10px rgba(255,0,0,0.2);
+            transition: 0.2s;
         }
 
         .btn-submit:disabled {
-            background-color: #cccccc;
+            background: #ccc;
             box-shadow: none;
             cursor: not-allowed;
         }
@@ -128,6 +148,10 @@
         .btn-submit:active:not(:disabled) {
             transform: scale(0.98);
         }
+
+        /* =========================
+           MESSAGE
+        ========================= */
 
         .info-box {
             display: none;
@@ -140,16 +164,22 @@
         }
 
         .info-box.success {
-            background-color: #f0f7ff;
+            display: block;
+            background: #f0f7ff;
             border: 1px solid #b3d7ff;
             color: #004085;
         }
 
         .info-box.error {
-            background-color: #f8d7da;
+            display: block;
+            background: #f8d7da;
             border: 1px solid #f5c6cb;
             color: #721c24;
         }
+
+        /* =========================
+           OPTIONS
+        ========================= */
 
         .grid-2x2 {
             display: grid;
@@ -163,23 +193,23 @@
             padding: 14px 10px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
-            background-color: #fff;
+            transition: 0.2s;
+            background: white;
+        }
+
+        .option-card:hover {
+            transform: translateY(-1px);
         }
 
         .option-card.active {
             border: 2px solid #d32f2f;
-            background-color: #fff5f5;
+            background: #fff5f5;
         }
 
         .diamond-amount {
             color: #29b6f6;
             font-size: 18px;
             font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
         }
 
         .price {
@@ -203,6 +233,10 @@
             font-weight: 600;
         }
 
+        /* =========================
+           HISTORY
+        ========================= */
+
         .history-table {
             width: 100%;
             border-collapse: collapse;
@@ -210,351 +244,833 @@
             font-size: 13px;
         }
 
-        .history-table th, .history-table td {
+        .history-table th,
+        .history-table td {
             border: 1px solid #eee;
             padding: 8px 6px;
             text-align: center;
         }
 
         .history-table th {
-            background-color: #f8f9fa;
+            background: #f8f9fa;
             color: #333;
         }
 
         .badge-pending {
-            background-color: #fff3cd;
+            background: #fff3cd;
             color: #856404;
             padding: 3px 6px;
             border-radius: 4px;
             font-size: 11px;
             font-weight: bold;
         }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
+            text-align: center;
+            color: #777;
+            font-size: 13px;
+            padding: 10px 0 20px;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="container">
 
-    <!-- BANNER ADMIN HÙNG AKIRA -->
+    <!-- =========================
+         ADMIN
+    ========================= -->
+
     <div class="admin-card">
-        <img src="https://i.imgur.com/2Xy3K9B.jpg" alt="Hùng Akira" class="admin-avatar">
+
+        <!--
+            Đặt ảnh bạn gửi cùng thư mục với file HTML
+            và đổi tên thành:
+
+            avatar.jpg
+        -->
+
+        <img
+            src="avatar.jpg"
+            alt="Hùng Akira"
+            class="admin-avatar"
+        >
+
         <div class="admin-info">
             <h2>HÙNG AKIRA</h2>
-            <p>Hệ Thống Nạp Kim Cương Free Fire Uy Tín & Tự Động 24/7</p>
+
+            <p>
+                Hệ Thống Nạp Kim Cương Free Fire
+                Uy Tín & Tự Động 24/7
+            </p>
         </div>
+
     </div>
 
-    <!-- BƯỚC 1 -->
+
+    <!-- =========================
+         BƯỚC 1
+    ========================= -->
+
     <div class="card">
+
         <div class="step-title">
             <span class="step-num">1</span>
-            <span class="step-label">Nhập UID Free Fire</span>
+            <span class="step-label">
+                Nhập UID Free Fire
+            </span>
         </div>
-        <input type="text" id="uidInput" placeholder="Nhập UID của bạn tại đây...">
-        <button class="btn-submit" id="loginBtn" onclick="loginUID()">ĐĂNG NHẬP</button>
-        <div class="info-box" id="infoBox"></div>
+
+        <input
+            type="text"
+            id="uidInput"
+            placeholder="Nhập UID của bạn tại đây..."
+        >
+
+        <button
+            class="btn-submit"
+            id="loginBtn"
+            onclick="loginUID()"
+        >
+            ĐĂNG NHẬP
+        </button>
+
+        <div
+            class="info-box"
+            id="infoBox"
+        ></div>
+
     </div>
 
-    <!-- BƯỚC 2 -->
+
+    <!-- =========================
+         BƯỚC 2
+    ========================= -->
+
     <div class="card">
+
         <div class="step-title">
             <span class="step-num">2</span>
-            <span class="step-label">Chọn gói kim cương</span>
+
+            <span class="step-label">
+                Chọn gói kim cương
+            </span>
         </div>
+
+
         <div class="grid-2x2">
-            <div class="option-card active" data-amount="50000" onclick="selectOption(this)">
-                <div class="diamond-amount">2.830 💎</div>
-                <div class="price">50.000đ</div>
+
+            <div
+                class="option-card active"
+                data-amount="50000"
+                onclick="selectOption(this)"
+            >
+                <div class="diamond-amount">
+                    2.830 💎
+                </div>
+
+                <div class="price">
+                    50.000đ
+                </div>
             </div>
-            <div class="option-card" data-amount="100000" onclick="selectOption(this)">
-                <div class="diamond-amount">5.660 💎</div>
-                <div class="price">100.000đ</div>
+
+
+            <div
+                class="option-card"
+                data-amount="100000"
+                onclick="selectOption(this)"
+            >
+                <div class="diamond-amount">
+                    5.660 💎
+                </div>
+
+                <div class="price">
+                    100.000đ
+                </div>
             </div>
-            <div class="option-card" data-amount="200000" onclick="selectOption(this)">
-                <div class="diamond-amount">11.320 💎</div>
-                <div class="price">200.000đ</div>
+
+
+            <div
+                class="option-card"
+                data-amount="200000"
+                onclick="selectOption(this)"
+            >
+                <div class="diamond-amount">
+                    11.320 💎
+                </div>
+
+                <div class="price">
+                    200.000đ
+                </div>
             </div>
-            <div class="option-card" data-amount="500000" onclick="selectOption(this)">
-                <div class="diamond-amount">28.300 💎</div>
-                <div class="price">500.000đ</div>
+
+
+            <div
+                class="option-card"
+                data-amount="500000"
+                onclick="selectOption(this)"
+            >
+                <div class="diamond-amount">
+                    28.300 💎
+                </div>
+
+                <div class="price">
+                    500.000đ
+                </div>
             </div>
+
         </div>
-        <div class="warning-text">⚠️ Vui lòng chọn đúng mệnh giá thẻ. Chọn sai mệnh giá sẽ bị mất thẻ!</div>
+
+        <div class="warning-text">
+            ⚠️ Vui lòng kiểm tra kỹ thông tin trước khi xác nhận.
+        </div>
+
     </div>
 
-    <!-- BƯỚC 3 -->
+
+    <!-- =========================
+         BƯỚC 3
+    ========================= -->
+
     <div class="card">
+
         <div class="step-title">
             <span class="step-num">3</span>
-            <span class="step-label">Phương thức thanh toán</span>
+
+            <span class="step-label">
+                Phương thức thanh toán
+            </span>
         </div>
+
+
         <div class="grid-2x2">
-            <div class="option-card active" data-telco="VIETTEL" onclick="selectCard(this)">
-                <div class="card-type" style="color:#d32f2f;">Thẻ Viettel</div>
+
+            <div
+                class="option-card active"
+                data-telco="VIETTEL"
+                onclick="selectCard(this)"
+            >
+                <div
+                    class="card-type"
+                    style="color:#d32f2f;"
+                >
+                    Thẻ Viettel
+                </div>
             </div>
-            <div class="option-card" data-telco="GARENA" onclick="selectCard(this)">
-                <div class="card-type" style="color:#d32f2f;">Thẻ Garena</div>
+
+
+            <div
+                class="option-card"
+                data-telco="GARENA"
+                onclick="selectCard(this)"
+            >
+                <div
+                    class="card-type"
+                    style="color:#d32f2f;"
+                >
+                    Thẻ Garena
+                </div>
             </div>
-            <div class="option-card" data-telco="MOBIFONE" onclick="selectCard(this)">
-                <div class="card-type" style="color:#0055a5;">Thẻ MobiFone</div>
+
+
+            <div
+                class="option-card"
+                data-telco="MOBIFONE"
+                onclick="selectCard(this)"
+            >
+                <div
+                    class="card-type"
+                    style="color:#0055a5;"
+                >
+                    Thẻ MobiFone
+                </div>
             </div>
-            <div class="option-card" data-telco="VINAPHONE" onclick="selectCard(this)">
-                <div class="card-type" style="color:#00a1e4;">Thẻ VinaPhone</div>
+
+
+            <div
+                class="option-card"
+                data-telco="VINAPHONE"
+                onclick="selectCard(this)"
+            >
+                <div
+                    class="card-type"
+                    style="color:#00a1e4;"
+                >
+                    Thẻ VinaPhone
+                </div>
             </div>
+
         </div>
-        
-        <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-            <input type="text" id="cardCode" placeholder="Mã số thẻ (13 hoặc 15 số)" maxlength="15">
-            <input type="text" id="cardSerial" placeholder="Số serie thẻ (11 hoặc 14 số)" maxlength="14">
-            <button class="btn-submit" id="napBtn" onclick="submitNap()">XÁC NHẬN NẠP THẺ</button>
-            <div class="info-box" id="napInfoBox"></div>
+
+
+        <div
+            style="
+                margin-top:15px;
+                display:flex;
+                flex-direction:column;
+                gap:10px;
+            "
+        >
+
+            <input
+                type="text"
+                id="cardCode"
+                placeholder="Mã thẻ — bản demo"
+                maxlength="20"
+                autocomplete="off"
+            >
+
+            <input
+                type="text"
+                id="cardSerial"
+                placeholder="Số serie — bản demo"
+                maxlength="20"
+                autocomplete="off"
+            >
+
+            <button
+                class="btn-submit"
+                id="napBtn"
+                onclick="submitNap()"
+            >
+                XÁC NHẬN NẠP THẺ
+            </button>
+
+            <div
+                class="info-box"
+                id="napInfoBox"
+            ></div>
+
         </div>
+
     </div>
 
-    <!-- BẢNG LỊCH SỬ NẠP -->
+
+    <!-- =========================
+         LỊCH SỬ
+    ========================= -->
+
     <div class="card">
+
         <div class="step-title">
-            <span class="step-label" style="color:#333;">📜 Lịch sử nạp thẻ gần đây</span>
+
+            <span
+                class="step-label"
+                style="color:#333;"
+            >
+                📜 Lịch sử nạp thẻ gần đây
+            </span>
+
         </div>
-        <div style="overflow-x: auto;">
+
+
+        <div style="overflow-x:auto;">
+
             <table class="history-table">
+
                 <thead>
+
                     <tr>
                         <th>Nhà mạng</th>
                         <th>Mệnh giá</th>
                         <th>Thời gian</th>
                         <th>Trạng thái</th>
                     </tr>
+
                 </thead>
+
                 <tbody id="historyBody">
+
                     <tr>
-                        <td colspan="4" style="color:#888;">Chưa có giao dịch nào</td>
+                        <td
+                            colspan="4"
+                            style="color:#888;"
+                        >
+                            Chưa có giao dịch nào
+                        </td>
                     </tr>
+
                 </tbody>
+
             </table>
+
         </div>
+
+    </div>
+
+
+    <div class="footer">
+        © 2026 Hùng Akira
     </div>
 
 </div>
 
+
 <script>
-    const CARD_RULES = {
-        VIETTEL:   { serial: [11, 14], code: [13, 15], maxSerial: 14, maxCode: 15 },
-        MOBIFONE:  { serial: [15],     code: [12],     maxSerial: 15, maxCode: 12 },
-        VINAPHONE: { serial: [14],     code: [12, 14], maxSerial: 14, maxCode: 14 },
-        GARENA:    { serial: [9],      code: [16],     maxSerial: 9,  maxCode: 16 }
-    };
+
+    /* =========================
+       TÀI KHOẢN DEMO
+    ========================= */
 
     const knownAccounts = {
-        "14448877837": { name: "MeoMeo8T7R8z", level: "45" }
+
+        "14448877837": {
+            name: "MeoMeo8T7R8z",
+            level: "45"
+        }
+
     };
 
-    // THÔNG TIN API GACHTHE1S ĐÃ CẬP NHẬT CHÍNH XÁC
-    const PARTNER_ID = "1735621050"; 
-    const PARTNER_KEY = "c322d6d694c8ebf100328db32422fce3";
+
+    /* =========================
+       LOAD
+    ========================= */
 
     window.onload = function() {
+
         renderHistory();
+
     };
 
-    async function loginUID() {
-        var uid = document.getElementById('uidInput').value.trim();
-        var infoBox = document.getElementById('infoBox');
-        var btn = document.getElementById('loginBtn');
 
-        if(!uid) {
-            showBox(infoBox, 'error', '❌ Vui lòng nhập UID!');
+    /* =========================
+       LOGIN UID
+    ========================= */
+
+    function loginUID() {
+
+        const uid =
+            document
+            .getElementById("uidInput")
+            .value
+            .trim();
+
+        const infoBox =
+            document.getElementById("infoBox");
+
+        const btn =
+            document.getElementById("loginBtn");
+
+
+        if (!uid) {
+
+            showBox(
+                infoBox,
+                "error",
+                "❌ Vui lòng nhập UID!"
+            );
+
             return;
         }
+
 
         if (!/^\d{8,11}$/.test(uid)) {
-            showBox(infoBox, 'error', '❌ <b>UID không đúng định dạng!</b> (Phải từ 8-11 chữ số)');
+
+            showBox(
+                infoBox,
+                "error",
+                "❌ UID không đúng định dạng! Phải từ 8-11 chữ số."
+            );
+
             return;
         }
+
 
         btn.innerText = "ĐANG KIỂM TRA...";
         btn.disabled = true;
-        infoBox.style.display = 'none';
 
-        if (knownAccounts[uid]) {
-            let acc = knownAccounts[uid];
-            showBox(infoBox, 'success', `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>${acc.name} (Lv.${acc.level})</b>`);
-            resetBtn(btn, "ĐĂNG NHẬP");
-            return;
-        }
 
-        try {
-            let response = await fetch(`https://api.vnn.dev/ff/info?uid=${uid}`);
-            let data = await response.json();
+        setTimeout(function() {
 
-            if (data && (data.nickname || data.name || data.AccountName)) {
-                let name = data.nickname || data.name || data.AccountName;
-                let level = data.level || data.AccountLevel || 'N/A';
-                showBox(infoBox, 'success', `✅ Đã nhận UID: <b>${uid}</b><br>Nhân vật: <b>${name} (Lv.${level})</b>`);
-                resetBtn(btn, "ĐĂNG NHẬP");
-                return;
+            if (knownAccounts[uid]) {
+
+                const account =
+                    knownAccounts[uid];
+
+                showBox(
+                    infoBox,
+                    "success",
+                    `✅ Đã nhận UID: <b>${uid}</b><br>
+                     Nhân vật: <b>${account.name}</b>
+                     (Lv.${account.level})`
+                );
+
+            } else {
+
+                showBox(
+                    infoBox,
+                    "success",
+                    `✅ Đã nhận UID: <b>${uid}</b>`
+                );
+
             }
-        } catch (e) {}
 
-        showBox(infoBox, 'success', `✅ Đã nhận UID: <b>${uid}</b>`);
-        resetBtn(btn, "ĐĂNG NHẬP");
+
+            resetBtn(
+                btn,
+                "ĐĂNG NHẬP"
+            );
+
+        }, 800);
+
     }
+
+
+    /* =========================
+       CHỌN GÓI
+    ========================= */
 
     function selectOption(el) {
-        var cards = el.parentElement.querySelectorAll('.option-card');
-        cards.forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
+
+        const cards =
+            el.parentElement
+            .querySelectorAll(".option-card");
+
+
+        cards.forEach(function(card) {
+
+            card.classList.remove("active");
+
+        });
+
+
+        el.classList.add("active");
+
     }
+
+
+    /* =========================
+       CHỌN NHÀ MẠNG
+    ========================= */
 
     function selectCard(el) {
-        var cards = el.parentElement.querySelectorAll('.option-card');
-        cards.forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
 
-        var telco = el.getAttribute('data-telco');
-        var rule = CARD_RULES[telco];
+        const cards =
+            el.parentElement
+            .querySelectorAll(".option-card");
 
-        var codeInput = document.getElementById('cardCode');
-        var serialInput = document.getElementById('cardSerial');
 
-        if (rule) {
-            serialInput.placeholder = `Số serie thẻ (${rule.serial.join(" hoặc ")} số)`;
-            codeInput.placeholder = `Mã số thẻ (${rule.code.join(" hoặc ")} số)`;
+        cards.forEach(function(card) {
 
-            serialInput.maxLength = rule.maxSerial;
-            codeInput.maxLength = rule.maxCode;
-        }
-    }
+            card.classList.remove("active");
 
-    async function submitNap() {
-        var uid = document.getElementById('uidInput').value.trim();
-        var code = document.getElementById('cardCode').value.replace(/\s+/g, '');
-        var serial = document.getElementById('cardSerial').value.replace(/\s+/g, ''); 
-
-        var napInfoBox = document.getElementById('napInfoBox');
-        var napBtn = document.getElementById('napBtn');
-
-        if(!uid) {
-            showBox(napInfoBox, 'error', '❌ Vui lòng nhập và đăng nhập UID trước!');
-            return;
-        }
-
-        if(!code || !serial) {
-            showBox(napInfoBox, 'error', '❌ Vui lòng nhập đầy đủ Mã số thẻ và Số Serie!');
-            return;
-        }
-
-        if(!/^\d+$/.test(code) || !/^\d+$/.test(serial)) {
-            showBox(napInfoBox, 'error', '❌ Số Serie và Mã số thẻ chỉ được chứa chữ số!');
-            return;
-        }
-
-        var selectedOption = document.querySelector('.card:nth-child(3) .option-card.active');
-        var selectedCard = document.querySelector('.card:nth-child(4) .option-card.active');
-
-        var amount = selectedOption ? selectedOption.getAttribute('data-amount') : "50000";
-        var telco = selectedCard ? selectedCard.getAttribute('data-telco') : "VIETTEL";
-
-        var rule = CARD_RULES[telco];
-        if (rule) {
-            if (!rule.serial.includes(serial.length)) {
-                showBox(napInfoBox, 'error', `❌ Thẻ ${telco} yêu cầu Số Serie phải có ${rule.serial.join(" hoặc ")} chữ số! (Hiện có: ${serial.length})`);
-                return;
-            }
-            if (!rule.code.includes(code.length)) {
-                showBox(napInfoBox, 'error', `❌ Thẻ ${telco} yêu cầu Mã thẻ phải có ${rule.code.join(" hoặc ")} chữ số! (Hiện có: ${code.length})`);
-                return;
-            }
-        }
-
-        var requestId = Date.now() + "_" + uid;
-        var sign = md5(PARTNER_KEY + code + serial);
-
-        napBtn.innerText = "⏳ ĐANG XỬ LÝ NẠP THẺ...";
-        napBtn.disabled = true;
-
-        var payload = {
-            sign: sign,
-            telco: telco,
-            code: code,
-            serial: serial,
-            amount: amount,
-            request_id: requestId,
-            partner_id: PARTNER_ID,
-            command: "charging"
-        };
-
-        try {
-            let response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://gachthe1s.vn/chargingws/v2'), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            let result = await response.json();
-
-            if (result.status === 99 || result.status === 1) {
-                showBox(napInfoBox, 'success', '✅ <b>Gửi thẻ thành công!</b> Hệ thống đang tiến hành gạch thẻ.');
-                saveHistory(telco, amount);
-                document.getElementById('cardCode').value = '';
-                document.getElementById('cardSerial').value = '';
-            } else {
-                showBox(napInfoBox, 'error', '❌ <b>Nạp thẻ thất bại:</b> ' + (result.message || 'Lỗi không xác định từ hệ thống gạch thẻ!'));
-            }
-        } catch (e) {
-            showBox(napInfoBox, 'error', '❌ <b>Lỗi kết nối:</b> Không thể kết nối tới cổng thanh toán. Vui lòng thử lại sau!');
-        }
-
-        resetBtn(napBtn, "XÁC NHẬN NẠP THẺ");
-    }
-
-    function showBox(el, type, msg) {
-        el.className = 'info-box ' + type;
-        el.innerHTML = msg;
-        el.style.display = 'block';
-    }
-
-    function resetBtn(btn, text) {
-        btn.innerText = text;
-        btn.disabled = false;
-    }
-
-    function saveHistory(telco, amount) {
-        var history = JSON.parse(localStorage.getItem('nap_history') || '[]');
-        var now = new Date();
-        var timeStr = now.getHours() + ':' + (now.getMinutes()<10?'0':'') + now.getMinutes() + ' ' + now.getDate() + '/' + (now.getMonth()+1);
-        
-        history.unshift({
-            telco: telco,
-            amount: parseInt(amount).toLocaleString('vi-VN') + 'đ',
-            time: timeStr
         });
 
-        if(history.length > 5) history.pop();
-        localStorage.setItem('nap_history', JSON.stringify(history));
-        renderHistory();
+
+        el.classList.add("active");
+
     }
+
+
+    /* =========================
+       DEMO NẠP THẺ
+    ========================= */
+
+    function submitNap() {
+
+        const uid =
+            document
+            .getElementById("uidInput")
+            .value
+            .trim();
+
+
+        const infoBox =
+            document
+            .getElementById("napInfoBox");
+
+
+        const button =
+            document
+            .getElementById("napBtn");
+
+
+        if (!uid) {
+
+            showBox(
+                infoBox,
+                "error",
+                "❌ Vui lòng nhập UID trước!"
+            );
+
+            return;
+        }
+
+
+        const selectedOption =
+            document.querySelector(
+                ".card:nth-of-type(2) .option-card.active"
+            );
+
+
+        const selectedCard =
+            document.querySelector(
+                ".card:nth-of-type(3) .option-card.active"
+            );
+
+
+        const amount =
+            selectedOption
+            ? selectedOption.dataset.amount
+            : "50000";
+
+
+        const telco =
+            selectedCard
+            ? selectedCard.dataset.telco
+            : "VIETTEL";
+
+
+        button.innerText =
+            "⏳ ĐANG XỬ LÝ...";
+
+        button.disabled = true;
+
+
+        /*
+            BẢN DEMO:
+
+            Không gửi mã thẻ/serial
+            lên máy chủ.
+
+            Khi làm hệ thống thật,
+            phần thanh toán cần được
+            xử lý ở backend an toàn.
+        */
+
+        setTimeout(function() {
+
+            showBox(
+                infoBox,
+                "success",
+                `✅ Yêu cầu demo đã được ghi nhận.<br>
+                 Nhà mạng: <b>${telco}</b><br>
+                 Mệnh giá: <b>${formatMoney(amount)}</b><br>
+                 <small>Đây chỉ là giao diện thử nghiệm.</small>`
+            );
+
+
+            saveHistory(
+                telco,
+                amount
+            );
+
+
+            document
+                .getElementById("cardCode")
+                .value = "";
+
+            document
+                .getElementById("cardSerial")
+                .value = "";
+
+
+            resetBtn(
+                button,
+                "XÁC NHẬN NẠP THẺ"
+            );
+
+        }, 1000);
+
+    }
+
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    function showBox(
+        element,
+        type,
+        message
+    ) {
+
+        element.className =
+            "info-box " + type;
+
+        element.innerHTML =
+            message;
+
+        element.style.display =
+            "block";
+
+    }
+
+
+    /* =========================
+       RESET BUTTON
+    ========================= */
+
+    function resetBtn(
+        button,
+        text
+    ) {
+
+        button.innerText =
+            text;
+
+        button.disabled =
+            false;
+
+    }
+
+
+    /* =========================
+       FORMAT MONEY
+    ========================= */
+
+    function formatMoney(amount) {
+
+        return parseInt(amount)
+            .toLocaleString("vi-VN")
+            + "đ";
+
+    }
+
+
+    /* =========================
+       SAVE HISTORY
+    ========================= */
+
+    function saveHistory(
+        telco,
+        amount
+    ) {
+
+        let history =
+            JSON.parse(
+                localStorage.getItem(
+                    "nap_history"
+                ) || "[]"
+            );
+
+
+        const now =
+            new Date();
+
+
+        const timeStr =
+            now.getHours()
+            + ":"
+            + String(
+                now.getMinutes()
+            ).padStart(2, "0")
+            + " "
+            + now.getDate()
+            + "/"
+            + (now.getMonth() + 1);
+
+
+        history.unshift({
+
+            telco: telco,
+
+            amount:
+                formatMoney(amount),
+
+            time: timeStr
+
+        });
+
+
+        if (history.length > 5) {
+
+            history.pop();
+
+        }
+
+
+        localStorage.setItem(
+            "nap_history",
+            JSON.stringify(history)
+        );
+
+
+        renderHistory();
+
+    }
+
+
+    /* =========================
+       RENDER HISTORY
+    ========================= */
 
     function renderHistory() {
-        var history = JSON.parse(localStorage.getItem('nap_history') || '[]');
-        var tbody = document.getElementById('historyBody');
-        
-        if(history.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="color:#888;">Chưa có giao dịch nào</td></tr>';
+
+        const history =
+            JSON.parse(
+                localStorage.getItem(
+                    "nap_history"
+                ) || "[]"
+            );
+
+
+        const tbody =
+            document.getElementById(
+                "historyBody"
+            );
+
+
+        if (history.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td
+                        colspan="4"
+                        style="color:#888;"
+                    >
+                        Chưa có giao dịch nào
+                    </td>
+                </tr>
+            `;
+
             return;
+
         }
 
-        var html = '';
-        history.forEach(item => {
-            html += `<tr>
-                <td><b>${item.telco}</b></td>
-                <td>${item.amount}</td>
-                <td>${item.time}</td>
-                <td><span class="badge-pending">Đang xử lý</span></td>
-            </tr>`;
+
+        let html = "";
+
+
+        history.forEach(function(item) {
+
+            html += `
+                <tr>
+
+                    <td>
+                        <b>${item.telco}</b>
+                    </td>
+
+                    <td>
+                        ${item.amount}
+                    </td>
+
+                    <td>
+                        ${item.time}
+                    </td>
+
+                    <td>
+                        <span class="badge-pending">
+                            Đang xử lý
+                        </span>
+                    </td>
+
+                </tr>
+            `;
+
         });
-        tbody.innerHTML = html;
+
+
+        tbody.innerHTML =
+            html;
+
     }
+
 </script>
 
 </body>
