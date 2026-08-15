@@ -4,15 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Nạp Thẻ Hùng Akira – Nạp Kim Cương Free Fire</title>
+    <title>Nạp Thẻ Hùng Akira – Free Fire</title>
 
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont,
-                "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -33,28 +40,42 @@
 
         /* =========================
            ADMIN
-        ========================= */
+        ========================== */
 
         .admin-card {
-            background: linear-gradient(135deg, #d32f2f, #9a0007);
+            background: linear-gradient(
+                135deg,
+                #d32f2f,
+                #9a0007
+            );
+
             border-radius: 16px;
             padding: 20px;
+
             color: white;
+
             display: flex;
             align-items: center;
             gap: 15px;
-            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+
+            box-shadow:
+                0 4px 12px rgba(211, 47, 47, 0.3);
         }
 
         .admin-avatar {
             width: 75px;
             height: 75px;
-            min-width: 75px;
+
             border-radius: 50%;
+
             border: 3px solid white;
+
             object-fit: cover;
-            object-position: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+
+            background: white;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.2);
         }
 
         .admin-info h2 {
@@ -71,22 +92,28 @@
 
         /* =========================
            CARD
-        ========================= */
+        ========================== */
 
         .card {
             background: white;
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.05);
         }
 
         .step-title {
             display: flex;
             align-items: center;
+
             gap: 10px;
+
             font-size: 18px;
             font-weight: 700;
+
             color: #d32f2f;
+
             margin-bottom: 12px;
         }
 
@@ -102,17 +129,25 @@
 
         /* =========================
            INPUT
-        ========================= */
+        ========================== */
 
         input[type="text"] {
             width: 100%;
+
             padding: 14px 16px;
-            border: 1px solid #e0e0e0;
+
+            border:
+                1px solid #e0e0e0;
+
             border-radius: 12px;
+
             font-size: 16px;
+
             outline: none;
-            transition: 0.2s;
+
             background: #fafafa;
+
+            transition: 0.2s;
         }
 
         input[type="text"]:focus {
@@ -122,25 +157,36 @@
 
         /* =========================
            BUTTON
-        ========================= */
+        ========================== */
 
         .btn-submit {
             width: 100%;
+
             padding: 14px;
+
             background: #ff0000;
+
             color: white;
+
             border: none;
+
             border-radius: 25px;
+
             font-size: 16px;
             font-weight: 700;
+
             cursor: pointer;
+
             margin-top: 12px;
-            box-shadow: 0 4px 10px rgba(255,0,0,0.2);
+
+            box-shadow:
+                0 4px 10px rgba(255,0,0,0.2);
+
             transition: 0.2s;
         }
 
         .btn-submit:disabled {
-            background: #ccc;
+            background: #cccccc;
             box-shadow: none;
             cursor: not-allowed;
         }
@@ -150,104 +196,142 @@
         }
 
         /* =========================
-           MESSAGE
-        ========================= */
+           INFO BOX
+        ========================== */
 
         .info-box {
             display: none;
+
             margin-top: 12px;
+
             padding: 12px 15px;
+
             border-radius: 10px;
+
             font-size: 14px;
+
             line-height: 1.5;
+
             text-align: center;
         }
 
         .info-box.success {
-            display: block;
             background: #f0f7ff;
             border: 1px solid #b3d7ff;
             color: #004085;
         }
 
         .info-box.error {
-            display: block;
             background: #f8d7da;
             border: 1px solid #f5c6cb;
             color: #721c24;
         }
 
         /* =========================
-           OPTIONS
-        ========================= */
+           GRID
+        ========================== */
 
         .grid-2x2 {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+
+            grid-template-columns:
+                1fr 1fr;
+
             gap: 12px;
         }
 
         .option-card {
-            border: 1px solid #e0e0e0;
+            border:
+                1px solid #e0e0e0;
+
             border-radius: 12px;
+
             padding: 14px 10px;
+
             text-align: center;
+
             cursor: pointer;
+
             transition: 0.2s;
+
             background: white;
         }
 
-        .option-card:hover {
-            transform: translateY(-1px);
-        }
-
         .option-card.active {
-            border: 2px solid #d32f2f;
-            background: #fff5f5;
+            border:
+                2px solid #d32f2f;
+
+            background:
+                #fff5f5;
         }
 
         .diamond-amount {
             color: #29b6f6;
+
             font-size: 18px;
+
             font-weight: 800;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 4px;
         }
 
         .price {
             font-size: 14px;
+
             font-weight: 700;
+
             color: #333;
+
             margin-top: 4px;
         }
 
         .card-type {
             font-weight: 700;
+
             color: #333;
+
             font-size: 15px;
         }
 
         .warning-text {
             font-size: 12px;
+
             color: #d32f2f;
+
             margin-top: 8px;
+
             text-align: center;
+
             font-weight: 600;
         }
 
         /* =========================
            HISTORY
-        ========================= */
+        ========================== */
 
         .history-table {
             width: 100%;
+
             border-collapse: collapse;
+
             margin-top: 10px;
+
             font-size: 13px;
         }
 
         .history-table th,
         .history-table td {
-            border: 1px solid #eee;
+            border:
+                1px solid #eee;
+
             padding: 8px 6px;
+
             text-align: center;
         }
 
@@ -256,24 +340,49 @@
             color: #333;
         }
 
-        .badge-pending {
+        .badge-demo {
             background: #fff3cd;
+
             color: #856404;
-            padding: 3px 6px;
+
+            padding:
+                3px 6px;
+
             border-radius: 4px;
+
             font-size: 11px;
+
             font-weight: bold;
         }
 
         /* =========================
            FOOTER
-        ========================= */
+        ========================== */
 
         .footer {
             text-align: center;
+
             color: #777;
+
             font-size: 13px;
-            padding: 10px 0 20px;
+
+            padding:
+                10px 0 20px;
+        }
+
+        @media (max-width: 380px) {
+
+            .admin-info h2 {
+                font-size: 18px;
+            }
+
+            .admin-info p {
+                font-size: 12px;
+            }
+
+            .diamond-amount {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -284,30 +393,25 @@
 
     <!-- =========================
          ADMIN
-    ========================= -->
+    ========================== -->
 
     <div class="admin-card">
 
-        <!--
-            Đặt ảnh bạn gửi cùng thư mục với file HTML
-            và đổi tên thành:
-
-            avatar.jpg
-        -->
-
         <img
-            src="avatar.jpg"
+            src="2BDB13D1-4AAD-4A2E-B3E0-1E8DC0FE2D19.png"
             alt="Hùng Akira"
             class="admin-avatar"
         >
 
         <div class="admin-info">
+
             <h2>HÙNG AKIRA</h2>
 
             <p>
                 Hệ Thống Nạp Kim Cương Free Fire
                 Uy Tín & Tự Động 24/7
             </p>
+
         </div>
 
     </div>
@@ -315,15 +419,20 @@
 
     <!-- =========================
          BƯỚC 1
-    ========================= -->
+    ========================== -->
 
     <div class="card">
 
         <div class="step-title">
-            <span class="step-num">1</span>
+
+            <span class="step-num">
+                1
+            </span>
+
             <span class="step-label">
                 Nhập UID Free Fire
             </span>
+
         </div>
 
         <input
@@ -350,26 +459,32 @@
 
     <!-- =========================
          BƯỚC 2
-    ========================= -->
+    ========================== -->
 
     <div class="card">
 
         <div class="step-title">
-            <span class="step-num">2</span>
+
+            <span class="step-num">
+                2
+            </span>
 
             <span class="step-label">
                 Chọn gói kim cương
             </span>
+
         </div>
 
 
         <div class="grid-2x2">
 
             <div
-                class="option-card active"
+                class="option-card active diamond-option"
                 data-amount="50000"
-                onclick="selectOption(this)"
+                data-diamond="2830"
+                onclick="selectDiamond(this)"
             >
+
                 <div class="diamond-amount">
                     2.830 💎
                 </div>
@@ -377,14 +492,17 @@
                 <div class="price">
                     50.000đ
                 </div>
+
             </div>
 
 
             <div
-                class="option-card"
+                class="option-card diamond-option"
                 data-amount="100000"
-                onclick="selectOption(this)"
+                data-diamond="5660"
+                onclick="selectDiamond(this)"
             >
+
                 <div class="diamond-amount">
                     5.660 💎
                 </div>
@@ -392,14 +510,17 @@
                 <div class="price">
                     100.000đ
                 </div>
+
             </div>
 
 
             <div
-                class="option-card"
+                class="option-card diamond-option"
                 data-amount="200000"
-                onclick="selectOption(this)"
+                data-diamond="11320"
+                onclick="selectDiamond(this)"
             >
+
                 <div class="diamond-amount">
                     11.320 💎
                 </div>
@@ -407,14 +528,17 @@
                 <div class="price">
                     200.000đ
                 </div>
+
             </div>
 
 
             <div
-                class="option-card"
+                class="option-card diamond-option"
                 data-amount="500000"
-                onclick="selectOption(this)"
+                data-diamond="28300"
+                onclick="selectDiamond(this)"
             >
+
                 <div class="diamond-amount">
                     28.300 💎
                 </div>
@@ -422,9 +546,11 @@
                 <div class="price">
                     500.000đ
                 </div>
+
             </div>
 
         </div>
+
 
         <div class="warning-text">
             ⚠️ Vui lòng kiểm tra kỹ thông tin trước khi xác nhận.
@@ -435,74 +561,86 @@
 
     <!-- =========================
          BƯỚC 3
-    ========================= -->
+    ========================== -->
 
     <div class="card">
 
         <div class="step-title">
-            <span class="step-num">3</span>
+
+            <span class="step-num">
+                3
+            </span>
 
             <span class="step-label">
                 Phương thức thanh toán
             </span>
+
         </div>
 
 
         <div class="grid-2x2">
 
             <div
-                class="option-card active"
+                class="option-card active payment-option"
                 data-telco="VIETTEL"
-                onclick="selectCard(this)"
+                onclick="selectPayment(this)"
             >
+
                 <div
                     class="card-type"
                     style="color:#d32f2f;"
                 >
                     Thẻ Viettel
                 </div>
+
             </div>
 
 
             <div
-                class="option-card"
+                class="option-card payment-option"
                 data-telco="GARENA"
-                onclick="selectCard(this)"
+                onclick="selectPayment(this)"
             >
+
                 <div
                     class="card-type"
                     style="color:#d32f2f;"
                 >
                     Thẻ Garena
                 </div>
+
             </div>
 
 
             <div
-                class="option-card"
+                class="option-card payment-option"
                 data-telco="MOBIFONE"
-                onclick="selectCard(this)"
+                onclick="selectPayment(this)"
             >
+
                 <div
                     class="card-type"
                     style="color:#0055a5;"
                 >
                     Thẻ MobiFone
                 </div>
+
             </div>
 
 
             <div
-                class="option-card"
+                class="option-card payment-option"
                 data-telco="VINAPHONE"
-                onclick="selectCard(this)"
+                onclick="selectPayment(this)"
             >
+
                 <div
                     class="card-type"
                     style="color:#00a1e4;"
                 >
                     Thẻ VinaPhone
                 </div>
+
             </div>
 
         </div>
@@ -521,22 +659,18 @@
                 type="text"
                 id="cardCode"
                 placeholder="Mã thẻ — bản demo"
-                maxlength="20"
-                autocomplete="off"
             >
 
             <input
                 type="text"
                 id="cardSerial"
                 placeholder="Số serie — bản demo"
-                maxlength="20"
-                autocomplete="off"
             >
 
             <button
                 class="btn-submit"
                 id="napBtn"
-                onclick="submitNap()"
+                onclick="submitDemo()"
             >
                 XÁC NHẬN NẠP THẺ
             </button>
@@ -553,46 +687,63 @@
 
     <!-- =========================
          LỊCH SỬ
-    ========================= -->
+    ========================== -->
 
     <div class="card">
 
         <div class="step-title">
 
-            <span
-                class="step-label"
-                style="color:#333;"
-            >
+            <span class="step-label">
                 📜 Lịch sử nạp thẻ gần đây
             </span>
 
         </div>
 
 
-        <div style="overflow-x:auto;">
+        <div
+            style="
+                overflow-x:auto;
+            "
+        >
 
             <table class="history-table">
 
                 <thead>
 
                     <tr>
-                        <th>Nhà mạng</th>
-                        <th>Mệnh giá</th>
-                        <th>Thời gian</th>
-                        <th>Trạng thái</th>
+
+                        <th>
+                            Nhà mạng
+                        </th>
+
+                        <th>
+                            Mệnh giá
+                        </th>
+
+                        <th>
+                            Thời gian
+                        </th>
+
+                        <th>
+                            Trạng thái
+                        </th>
+
                     </tr>
 
                 </thead>
 
+
                 <tbody id="historyBody">
 
                     <tr>
+
                         <td
                             colspan="4"
                             style="color:#888;"
                         >
                             Chưa có giao dịch nào
                         </td>
+
                     </tr>
 
                 </tbody>
@@ -605,7 +756,9 @@
 
 
     <div class="footer">
-        © 2026 Hùng Akira
+
+        © Hùng Akira — Website demo
+
     </div>
 
 </div>
@@ -614,24 +767,19 @@
 <script>
 
     /* =========================
-       TÀI KHOẢN DEMO
-    ========================= */
+       BIẾN
+    ========================== */
 
-    const knownAccounts = {
+    let selectedAmount = "50000";
 
-        "14448877837": {
-            name: "MeoMeo8T7R8z",
-            level: "45"
-        }
-
-    };
+    let selectedTelco = "VIETTEL";
 
 
     /* =========================
        LOAD
-    ========================= */
+    ========================== */
 
-    window.onload = function() {
+    window.onload = function () {
 
         renderHistory();
 
@@ -640,15 +788,15 @@
 
     /* =========================
        LOGIN UID
-    ========================= */
+    ========================== */
 
     function loginUID() {
 
         const uid =
             document
-            .getElementById("uidInput")
-            .value
-            .trim();
+                .getElementById("uidInput")
+                .value
+                .trim();
 
         const infoBox =
             document.getElementById("infoBox");
@@ -674,120 +822,108 @@
             showBox(
                 infoBox,
                 "error",
-                "❌ UID không đúng định dạng! Phải từ 8-11 chữ số."
+                "❌ UID phải gồm từ 8 đến 11 chữ số!"
             );
 
             return;
         }
 
 
-        btn.innerText = "ĐANG KIỂM TRA...";
         btn.disabled = true;
 
-
-        setTimeout(function() {
-
-            if (knownAccounts[uid]) {
-
-                const account =
-                    knownAccounts[uid];
-
-                showBox(
-                    infoBox,
-                    "success",
-                    `✅ Đã nhận UID: <b>${uid}</b><br>
-                     Nhân vật: <b>${account.name}</b>
-                     (Lv.${account.level})`
-                );
-
-            } else {
-
-                showBox(
-                    infoBox,
-                    "success",
-                    `✅ Đã nhận UID: <b>${uid}</b>`
-                );
-
-            }
+        btn.innerText =
+            "ĐANG KIỂM TRA...";
 
 
-            resetBtn(
-                btn,
-                "ĐĂNG NHẬP"
+        setTimeout(function () {
+
+            showBox(
+                infoBox,
+                "success",
+                "✅ UID hợp lệ: <b>" +
+                uid +
+                "</b><br>" +
+                "Bạn có thể chọn gói kim cương."
             );
 
-        }, 800);
+
+            btn.disabled = false;
+
+            btn.innerText =
+                "ĐĂNG NHẬP";
+
+        }, 700);
 
     }
 
 
     /* =========================
-       CHỌN GÓI
-    ========================= */
+       CHỌN KIM CƯƠNG
+    ========================== */
 
-    function selectOption(el) {
+    function selectDiamond(element) {
 
-        const cards =
-            el.parentElement
-            .querySelectorAll(".option-card");
+        document
+            .querySelectorAll(".diamond-option")
+            .forEach(function(card) {
 
+                card.classList.remove("active");
 
-        cards.forEach(function(card) {
-
-            card.classList.remove("active");
-
-        });
+            });
 
 
-        el.classList.add("active");
+        element.classList.add("active");
+
+
+        selectedAmount =
+            element.dataset.amount;
 
     }
 
 
     /* =========================
        CHỌN NHÀ MẠNG
-    ========================= */
+    ========================== */
 
-    function selectCard(el) {
+    function selectPayment(element) {
 
-        const cards =
-            el.parentElement
-            .querySelectorAll(".option-card");
+        document
+            .querySelectorAll(".payment-option")
+            .forEach(function(card) {
 
+                card.classList.remove("active");
 
-        cards.forEach(function(card) {
-
-            card.classList.remove("active");
-
-        });
+            });
 
 
-        el.classList.add("active");
+        element.classList.add("active");
+
+
+        selectedTelco =
+            element.dataset.telco;
 
     }
 
 
     /* =========================
-       DEMO NẠP THẺ
-    ========================= */
+       DEMO NẠP
+    ========================== */
 
-    function submitNap() {
+    function submitDemo() {
 
         const uid =
             document
-            .getElementById("uidInput")
-            .value
-            .trim();
-
+                .getElementById("uidInput")
+                .value
+                .trim();
 
         const infoBox =
             document
-            .getElementById("napInfoBox");
+                .getElementById("napInfoBox");
 
-
-        const button =
+        const btn =
             document
-            .getElementById("napBtn");
+                .getElementById("napBtn");
 
 
         if (!uid) {
@@ -802,62 +938,55 @@
         }
 
 
-        const selectedOption =
-            document.querySelector(
-                ".card:nth-of-type(2) .option-card.active"
+        if (!/^\d{8,11}$/.test(uid)) {
+
+            showBox(
+                infoBox,
+                "error",
+                "❌ UID không đúng định dạng!"
             );
 
-
-        const selectedCard =
-            document.querySelector(
-                ".card:nth-of-type(3) .option-card.active"
-            );
+            return;
+        }
 
 
-        const amount =
-            selectedOption
-            ? selectedOption.dataset.amount
-            : "50000";
+        btn.disabled = true;
 
-
-        const telco =
-            selectedCard
-            ? selectedCard.dataset.telco
-            : "VIETTEL";
-
-
-        button.innerText =
-            "⏳ ĐANG XỬ LÝ...";
-
-        button.disabled = true;
+        btn.innerText =
+            "⏳ ĐANG XỬ LÝ DEMO...";
 
 
         /*
             BẢN DEMO:
 
-            Không gửi mã thẻ/serial
-            lên máy chủ.
-
-            Khi làm hệ thống thật,
-            phần thanh toán cần được
-            xử lý ở backend an toàn.
+            Không gửi mã thẻ,
+            không gửi serial,
+            không gọi API thanh toán.
         */
 
-        setTimeout(function() {
+
+        setTimeout(function () {
 
             showBox(
                 infoBox,
                 "success",
-                `✅ Yêu cầu demo đã được ghi nhận.<br>
-                 Nhà mạng: <b>${telco}</b><br>
-                 Mệnh giá: <b>${formatMoney(amount)}</b><br>
-                 <small>Đây chỉ là giao diện thử nghiệm.</small>`
+                "✅ Demo thành công!<br>" +
+                "UID: <b>" + uid + "</b><br>" +
+                "Nhà mạng: <b>" +
+                selectedTelco +
+                "</b><br>" +
+                "Mệnh giá: <b>" +
+                Number(selectedAmount)
+                    .toLocaleString("vi-VN") +
+                "đ</b><br><br>" +
+                "⚠️ Đây chỉ là bản demo, " +
+                "không phát sinh giao dịch thật."
             );
 
 
             saveHistory(
-                telco,
-                amount
+                selectedTelco,
+                selectedAmount
             );
 
 
@@ -865,15 +994,17 @@
                 .getElementById("cardCode")
                 .value = "";
 
+
             document
                 .getElementById("cardSerial")
                 .value = "";
 
 
-            resetBtn(
-                button,
-                "XÁC NHẬN NẠP THẺ"
-            );
+            btn.disabled = false;
+
+            btn.innerText =
+                "XÁC NHẬN NẠP THẺ";
+
 
         }, 1000);
 
@@ -881,8 +1012,8 @@
 
 
     /* =========================
-       MESSAGE
-    ========================= */
+       HIỂN THỊ THÔNG BÁO
+    ========================== */
 
     function showBox(
         element,
@@ -903,39 +1034,8 @@
 
 
     /* =========================
-       RESET BUTTON
-    ========================= */
-
-    function resetBtn(
-        button,
-        text
-    ) {
-
-        button.innerText =
-            text;
-
-        button.disabled =
-            false;
-
-    }
-
-
-    /* =========================
-       FORMAT MONEY
-    ========================= */
-
-    function formatMoney(amount) {
-
-        return parseInt(amount)
-            .toLocaleString("vi-VN")
-            + "đ";
-
-    }
-
-
-    /* =========================
-       SAVE HISTORY
-    ========================= */
+       LƯU LỊCH SỬ
+    ========================== */
 
     function saveHistory(
         telco,
@@ -954,16 +1054,16 @@
             new Date();
 
 
-        const timeStr =
-            now.getHours()
-            + ":"
-            + String(
+        const time =
+            now.getHours() +
+            ":" +
+            String(
                 now.getMinutes()
-            ).padStart(2, "0")
-            + " "
-            + now.getDate()
-            + "/"
-            + (now.getMonth() + 1);
+            ).padStart(2, "0") +
+            " " +
+            now.getDate() +
+            "/" +
+            (now.getMonth() + 1);
 
 
         history.unshift({
@@ -971,9 +1071,11 @@
             telco: telco,
 
             amount:
-                formatMoney(amount),
+                Number(amount)
+                    .toLocaleString("vi-VN")
+                + "đ",
 
-            time: timeStr
+            time: time
 
         });
 
@@ -997,8 +1099,8 @@
 
 
     /* =========================
-       RENDER HISTORY
-    ========================= */
+       HIỂN THỊ LỊCH SỬ
+    ========================== */
 
     function renderHistory() {
 
@@ -1018,7 +1120,8 @@
 
         if (history.length === 0) {
 
-            tbody.innerHTML = `
+            tbody.innerHTML =
+                `
                 <tr>
                     <td
                         colspan="4"
@@ -1027,10 +1130,9 @@
                         Chưa có giao dịch nào
                     </td>
                 </tr>
-            `;
+                `;
 
             return;
-
         }
 
 
@@ -1039,11 +1141,14 @@
 
         history.forEach(function(item) {
 
-            html += `
+            html +=
+                `
                 <tr>
 
                     <td>
-                        <b>${item.telco}</b>
+                        <b>
+                            ${item.telco}
+                        </b>
                     </td>
 
                     <td>
@@ -1055,13 +1160,13 @@
                     </td>
 
                     <td>
-                        <span class="badge-pending">
-                            Đang xử lý
+                        <span class="badge-demo">
+                            DEMO
                         </span>
                     </td>
 
                 </tr>
-            `;
+                `;
 
         });
 
