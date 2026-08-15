@@ -3,547 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Hùng Akira - Nạp Kim Cương Free Fire</title>
-
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        body {
-            background: #f3f4f6;
-            color: #222;
-            padding-bottom: 40px;
-        }
-
-        .container {
-            width: 94%;
-            max-width: 850px;
-            margin: 20px auto;
-        }
-
-        /* HEADER */
-        .header {
-            background: linear-gradient(135deg, #c93832, #a81714);
-            color: white;
-            border-radius: 30px;
-            padding: 28px;
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            box-shadow: 0 12px 30px rgba(170, 30, 25, 0.25);
-            margin-bottom: 28px;
-        }
-
-        .logo {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: white;
-            border: 5px solid white;
-            flex-shrink: 0;
-        }
-
-        .header h1 {
-            font-size: 38px;
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            font-size: 21px;
-            line-height: 1.4;
-        }
-
-        /* CARD */
-        .card {
-            background: white;
-            border-radius: 28px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
-        }
-
-        .step-title {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 30px;
-            font-weight: bold;
-            margin-bottom: 22px;
-        }
-
-        .step-number {
-            color: #c73832;
-            font-size: 40px;
-            font-weight: bold;
-        }
-
-        /* INPUT */
-        input {
-            width: 100%;
-            padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: 22px;
-            font-size: 19px;
-            outline: none;
-            margin-bottom: 18px;
-        }
-
-        input:focus {
-            border-color: #d33b35;
-        }
-
-        /* BUTTON */
-        .login-btn {
-            width: 100%;
-            border: none;
-            border-radius: 40px;
-            padding: 20px;
-            background: #f52f24;
-            color: white;
-            font-size: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(245,47,36,0.25);
-        }
-
-        .login-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* DIAMOND PACKAGES */
-        .packages {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .package {
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 22px;
-            padding: 24px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .package:hover {
-            border-color: #c93832;
-        }
-
-        .package.selected {
-            border-color: #c93832;
-            background: #fff7f7;
-        }
-
-        .diamond {
-            color: #55aeea;
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .price {
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .warning {
-            text-align: center;
-            color: #c93832;
-            font-weight: bold;
-            margin-top: 20px;
-            font-size: 17px;
-        }
-
-        /* PAYMENT */
-        .payments {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-        }
-
-        .payment {
-            border: 2px solid #ddd;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .payment.selected {
-            border-color: #c93832;
-            background: #fff7f7;
-            color: #c93832;
-        }
-
-        /* CARD DEMO */
-        .demo-note {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 15px;
-            background: #fff7e6;
-            color: #8a5a00;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-
-        .submit-btn {
-            width: 100%;
-            margin-top: 20px;
-            padding: 18px;
-            border: none;
-            border-radius: 25px;
-            background: #c93832;
-            color: white;
-            font-size: 21px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .result {
-            display: none;
-            margin-top: 20px;
-            padding: 18px;
-            border-radius: 18px;
-            background: #eefbf0;
-            color: #20752b;
-            font-weight: bold;
-            line-height: 1.5;
-        }
-
-        /* FOOTER */
-        footer {
-            text-align: center;
-            color: #777;
-            margin-top: 30px;
-            line-height: 1.7;
-        }
-
-        /* MOBILE */
-        @media (max-width: 600px) {
-
-            .container {
-                width: 94%;
-            }
-
-            .header {
-                padding: 22px;
-                gap: 16px;
-                border-radius: 25px;
-            }
-
-            .logo {
-                width: 90px;
-                height: 90px;
-            }
-
-            .header h1 {
-                font-size: 25px;
-            }
-
-            .header p {
-                font-size: 16px;
-            }
-
-            .card {
-                padding: 22px;
-                border-radius: 25px;
-            }
-
-            .step-title {
-                font-size: 23px;
-            }
-
-            .step-number {
-                font-size: 34px;
-            }
-
-            .packages,
-            .payments {
-                gap: 12px;
-            }
-
-            .diamond {
-                font-size: 23px;
-            }
-
-            .price {
-                font-size: 18px;
-            }
-
-            .payment {
-                font-size: 16px;
-                padding: 18px 8px;
-            }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+        body { background: #f3f4f6; color: #222; padding-bottom: 40px; }
+        .container { width: 94%; max-width: 850px; margin: 20px auto; }
+        .header { background: linear-gradient(135deg, #c93832, #a81714); color: white; border-radius: 30px; padding: 28px; display: flex; align-items: center; gap: 25px; box-shadow: 0 12px 30px rgba(170, 30, 25, 0.25); margin-bottom: 28px; }
+        .logo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; background: white; border: 5px solid white; flex-shrink: 0; }
+        .header h1 { font-size: 38px; margin-bottom: 8px; }
+        .header p { font-size: 21px; line-height: 1.4; }
+        .card { background: white; border-radius: 28px; padding: 30px; margin-bottom: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.07); }
+        .step-title { display: flex; align-items: center; gap: 15px; font-size: 30px; font-weight: bold; margin-bottom: 22px; }
+        .step-number { color: #c73832; font-size: 40px; font-weight: bold; }
+        input { width: 100%; padding: 20px; border: 2px solid #ddd; border-radius: 22px; font-size: 19px; outline: none; margin-bottom: 18px; }
+        input:focus { border-color: #d33b35; }
+        .login-btn { width: 100%; border: none; border-radius: 40px; padding: 20px; background: #f52f24; color: white; font-size: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(245,47,36,0.25); }
+        .packages { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .package { background: white; border: 2px solid #ddd; border-radius: 22px; padding: 24px 10px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .package.selected { border-color: #c93832; background: #fff7f7; }
+        .diamond { color: #55aeea; font-size: 28px; font-weight: bold; margin-bottom: 8px; }
+        .price { font-size: 22px; font-weight: bold; }
+        .warning { text-align: center; color: #c93832; font-weight: bold; margin-top: 20px; font-size: 17px; }
+        .payments { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        .payment { border: 2px solid #ddd; border-radius: 20px; padding: 20px; text-align: center; font-size: 20px; font-weight: bold; cursor: pointer; }
+        .payment.selected { border-color: #c93832; background: #fff7f7; color: #c93832; }
+        .submit-btn { width: 100%; margin-top: 20px; padding: 18px; border: none; border-radius: 25px; background: #c93832; color: white; font-size: 21px; font-weight: bold; cursor: pointer; }
+        .result { display: none; margin-top: 20px; padding: 18px; border-radius: 18px; background: #eefbf0; color: #20752b; font-weight: bold; line-height: 1.5; }
+        footer { text-align: center; color: #777; margin-top: 30px; line-height: 1.7; }
     </style>
 </head>
-
 <body>
 
 <div class="container">
-
-    <!-- HEADER -->
     <div class="header">
-
-        <!-- ẢNH MỚI -->
-        <img
-            src="IMG_8159.jpeg"
-            alt="Hùng Akira"
-            class="logo"
-        >
-
+        <img src="IMG_8159.jpeg" alt="Hùng Akira" class="logo">
         <div>
             <h1>HÙNG AKIRA</h1>
-            <p>
-                Hệ Thống Nạp Kim Cương Free Fire
-                Uy Tín & Tự Động 24/7
-            </p>
+            <p>Hệ Thống Nạp Kim Cương Free Fire Uy Tín & Tự Động 24/7</p>
         </div>
-
     </div>
-
 
     <!-- BƯỚC 1 -->
     <div class="card">
-
         <div class="step-title">
             <span class="step-number">1</span>
             <span>Nhập UID Free Fire</span>
         </div>
-
-        <input
-            type="text"
-            id="uid"
-            placeholder="Nhập UID của bạn tại đây..."
-            inputmode="numeric"
-        >
-
-        <button class="login-btn" onclick="checkUID()">
-            ĐĂNG NHẬP
-        </button>
-
+        <input type="text" id="uid" placeholder="Nhập UID của bạn tại đây..." inputmode="numeric">
+        <button class="login-btn" onclick="checkUID()">ĐĂNG NHẬP</button>
     </div>
-
 
     <!-- BƯỚC 2 -->
     <div class="card">
-
         <div class="step-title">
             <span class="step-number">2</span>
             <span>Chọn gói kim cương</span>
         </div>
-
         <div class="packages">
-
-            <div class="package selected"
-                 onclick="selectPackage(this, '2.830 kim cương', '50.000đ')">
+            <div class="package selected" onclick="selectPackage(this, '50000', '2.830 kim cương', '50.000đ')">
                 <div class="diamond">2.830 💎</div>
                 <div class="price">50.000đ</div>
             </div>
-
-            <div class="package"
-                 onclick="selectPackage(this, '5.660 kim cương', '100.000đ')">
+            <div class="package" onclick="selectPackage(this, '100000', '5.660 kim cương', '100.000đ')">
                 <div class="diamond">5.660 💎</div>
                 <div class="price">100.000đ</div>
             </div>
-
-            <div class="package"
-                 onclick="selectPackage(this, '11.320 kim cương', '200.000đ')">
+            <div class="package" onclick="selectPackage(this, '200000', '11.320 kim cương', '200.000đ')">
                 <div class="diamond">11.320 💎</div>
                 <div class="price">200.000đ</div>
             </div>
-
-            <div class="package"
-                 onclick="selectPackage(this, '28.300 kim cương', '500.000đ')">
+            <div class="package" onclick="selectPackage(this, '500000', '28.300 kim cương', '500.000đ')">
                 <div class="diamond">28.300 💎</div>
                 <div class="price">500.000đ</div>
             </div>
-
         </div>
-
-        <div class="warning">
-            ⚠️ Vui lòng kiểm tra kỹ thông tin trước khi xác nhận.
-        </div>
-
+        <div class="warning">⚠️ Vui lòng kiểm tra kỹ thông tin trước khi xác nhận.</div>
     </div>
-
 
     <!-- BƯỚC 3 -->
     <div class="card">
-
         <div class="step-title">
             <span class="step-number">3</span>
             <span>Phương thức thanh toán</span>
         </div>
-
         <div class="payments">
-
-            <div class="payment selected"
-                 onclick="selectPayment(this)">
-                Thẻ Viettel
-            </div>
-
-            <div class="payment"
-                 onclick="selectPayment(this)">
-                Thẻ Garena
-            </div>
-
-            <div class="payment"
-                 onclick="selectPayment(this)">
-                Thẻ MobiFone
-            </div>
-
-            <div class="payment"
-                 onclick="selectPayment(this)">
-                Thẻ VinaPhone
-            </div>
-
+            <div class="payment selected" onclick="selectPayment(this, 'VIETTEL')">Thẻ Viettel</div>
+            <div class="payment" onclick="selectPayment(this, 'GARENA')">Thẻ Garena</div>
+            <div class="payment" onclick="selectPayment(this, 'MOBIFONE')">Thẻ MobiFone</div>
+            <div class="payment" onclick="selectPayment(this, 'VINAPHONE')">Thẻ VinaPhone</div>
         </div>
-
         <div style="margin-top:20px">
-
-            <input
-                type="text"
-                id="cardCode"
-                placeholder="Mã thẻ — bản demo"
-            >
-
-            <input
-                type="text"
-                id="serial"
-                placeholder="Serial thẻ — bản demo"
-            >
-
+            <input type="text" id="cardCode" placeholder="Nhập mã thẻ...">
+            <input type="text" id="serial" placeholder="Nhập serial thẻ...">
         </div>
-
-        <div class="demo-note">
-            ⚠️ Đây là giao diện demo. Không nhập thông tin thẻ thật
-            vào phiên bản này. Muốn xử lý thanh toán thật cần kết nối
-            backend/API thanh toán an toàn và không để API key bí mật
-            trong mã HTML.
-        </div>
-
-        <button class="submit-btn" onclick="submitOrder()">
-            XÁC NHẬN NẠP
-        </button>
-
-        <div class="result" id="result"></div>
-
+        <button class="submit-btn" onclick="submitOrder()">XÁC NHẬN NẠP</button>
+        <div class="result" id="result" style="display:none;"></div>
     </div>
 
-
-    <!-- THÔNG TIN -->
-    <div class="card">
-
-        <div class="step-title">
-            <span>📌</span>
-            <span>Lưu ý</span>
-        </div>
-
-        <p style="line-height:1.7;font-size:17px">
-            • Kiểm tra chính xác UID trước khi xác nhận.<br>
-            • Kiểm tra đúng gói kim cương đã chọn.<br>
-            • Không chia sẻ mật khẩu tài khoản Free Fire.<br>
-            • Không cung cấp thông tin thẻ thật cho phiên bản demo.
-        </p>
-
-    </div>
-
-
-    <footer>
-        © 2026 Hùng Akira<br>
-        Website nạp kim cương Free Fire
-    </footer>
-
+    <footer>© 2026 Hùng Akira<br>Website nạp kim cương Free Fire</footer>
 </div>
 
-
 <script>
-
-    let selectedPackage = {
-        diamond: "2.830 kim cương",
-        price: "50.000đ"
-    };
-
+    let selectedPackage = { amount: "50000", diamond: "2.830 kim cương", price: "50.000đ" };
+    let selectedTelco = "VIETTEL";
 
     function checkUID() {
-
         const uid = document.getElementById("uid").value.trim();
-
-        if (uid === "") {
-            alert("Vui lòng nhập UID Free Fire.");
+        if (!uid || !/^[0-9]+$/.test(uid)) {
+            alert("Vui lòng nhập UID hợp lệ (chỉ chứa số).");
             return;
         }
-
-        if (!/^[0-9]+$/.test(uid)) {
-            alert("UID chỉ được chứa số.");
-            return;
-        }
-
-        alert("Đã nhận UID: " + uid);
+        alert("Đã xác thực UID thành công: " + uid);
     }
 
-
-    function selectPackage(element, diamond, price) {
-
-        document.querySelectorAll(".package")
-            .forEach(item => item.classList.remove("selected"));
-
+    function selectPackage(element, amount, diamond, price) {
+        document.querySelectorAll(".package").forEach(item => item.classList.remove("selected"));
         element.classList.add("selected");
-
-        selectedPackage = {
-            diamond: diamond,
-            price: price
-        };
+        selectedPackage = { amount, diamond, price };
     }
 
-
-    function selectPayment(element) {
-
-        document.querySelectorAll(".payment")
-            .forEach(item => item.classList.remove("selected"));
-
+    function selectPayment(element, telco) {
+        document.querySelectorAll(".payment").forEach(item => item.classList.remove("selected"));
         element.classList.add("selected");
+        selectedTelco = telco;
     }
-
 
     function submitOrder() {
-
         const uid = document.getElementById("uid").value.trim();
+        const cardCode = document.getElementById("cardCode").value.trim();
+        const serial = document.getElementById("serial").value.trim();
         const result = document.getElementById("result");
 
-        if (uid === "") {
-            alert("Vui lòng nhập UID trước.");
+        if (!uid || !/^[0-9]+$/.test(uid)) {
+            alert("Vui lòng nhập UID Free Fire!");
             return;
         }
-
-        if (!/^[0-9]+$/.test(uid)) {
-            alert("UID không hợp lệ.");
+        if (!cardCode || !serial) {
+            alert("Vui lòng nhập đầy đủ mã thẻ và serial!");
             return;
         }
 
         result.style.display = "block";
+        result.style.background = "#eefbf0";
+        result.style.color = "#20752b";
+        result.innerHTML = "Đang gửi thẻ lên hệ thống xử lý, vui lòng chờ...";
 
-        result.innerHTML =
-            "Đã tạo đơn demo.<br>" +
-            "UID: " + uid + "<br>" +
-            "Gói: " + selectedPackage.diamond + "<br>" +
-            "Giá: " + selectedPackage.price +
-            "<br><br>" +
-            "Phiên bản hiện tại chưa thực hiện thanh toán thật.";
+        // Gửi dữ liệu qua file api.php trên cùng server của bạn
+        fetch('api.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `uid=${encodeURIComponent(uid)}&telco=${encodeURIComponent(selectedTelco)}&code=${encodeURIComponent(cardCode)}&serial=${encodeURIComponent(serial)}&amount=${encodeURIComponent(selectedPackage.amount)}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Dựa vào trạng thái trả về của The9p (Status: 1 là thành công, 99 là chờ xử lý, v.v.)
+            if (data.status == 1) {
+                result.innerHTML = `✅ Nạp thẻ thành công!<br>Gói: ${selectedPackage.diamond}<br>Thực nhận: ${data.amount || selectedPackage.price}`;
+            } else if (data.status == 99) {
+                result.innerHTML = `⏳ Thẻ đang chờ hệ thống duyệt hoặc chờ nhà mạng trả kết quả.`;
+            } else {
+                result.style.background = "#fdf2f2";
+                result.style.color = "#c93832";
+                result.innerHTML = `❌ Thất bại: ${data.message || 'Thẻ không hợp lệ hoặc sai mệnh giá.'}`;
+            }
+        })
+        .catch(err => {
+            result.style.background = "#fdf2f2";
+            result.style.color = "#c93832";
+            result.innerHTML = "Lỗi kết nối tới máy chủ xử lý!";
+        });
     }
-
 </script>
-
 </body>
 </html>
