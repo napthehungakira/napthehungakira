@@ -1,81 +1,33 @@
 const express = require("express");
-const crypto = require("crypto");
 const cors = require("cors");
+const crypto = require("crypto");
 const axios = require("axios");
 
 const app = express();
 
-/* =========================
-   CẤU HÌNH SERVER
-========================= */
-
-app.use(cors({
-    origin: [
-        "https://napthehungakira.github.io"
-    ],
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"]
-}));
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/* =========================
-   THÔNG TIN API
-========================= */
-
-// Partner ID lấy theo thông tin tài khoản bạn gửi
-const PARTNER_ID = process.env.PARTNER_ID;
-
-// Partner Key KHÔNG được ghi trực tiếp vào code
-const PARTNER_KEY = process.env.PARTNER_KEY;
-
-const API_URL =
-    process.env.API_URL ||
-    "https://gachthe1s.com/chargingws/v2";
+// ================================
+// CONFIG
+// ================================
 
 const PORT = process.env.PORT || 3000;
 
-/* =========================
-   KIỂM TRA ENV
-========================= */
+const PARTNER_ID = process.env.PARTNER_ID;
+const PARTNER_KEY = process.env.PARTNER_KEY;
 
-if (!PARTNER_ID || !PARTNER_KEY) {
-    console.error(
-        "❌ Thiếu PARTNER_ID hoặc PARTNER_KEY trong Environment Variables."
-    );
-}
+const API_URL = "https://gachthe1s.com/chargingws/v2";
 
-/* =========================
-   GÓI NẠP ĐƯỢC PHÉP
-========================= */
-
-const ALLOWED_AMOUNTS = [
-    "50000",
-    "100000",
-    "200000",
-    "500000"
-];
-
-/* =========================
-   NHÀ MẠNG ĐƯỢC PHÉP
-========================= */
-
-const ALLOWED_TELCOS = [
-    "VIETTEL",
-    "GARENA",
-    "MOBIFONE",
-    "VINAPHONE"
-];
-
-/* =========================
-   TRANG KIỂM TRA SERVER
-========================= */
+// ================================
+// HEALTH CHECK
+// ================================
 
 app.get("/", (req, res) => {
     res.json({
         status: 1,
-        message: "Hùng Akira API đang hoạt động."
+        message: "Hùng Akira API server đang hoạt động"
     });
 });
 
@@ -83,254 +35,134 @@ app.get("/health", (req, res) => {
     res.json({
         status: 1,
         server: "online",
-        partner_configured: Boolean(
-            PARTNER_ID && PARTNER_KEY
-        ),
-        time: new Date().toISOString()
+        partner_configured: Boolean(PARTNER_ID && PARTNER_KEY)
     });
 });
 
-/* =========================
-   HÀM TẠO REQUEST ID
-========================= */
-
-function createRequestId() {
-    return (
-        "FF_" +
-        Date.now() +
-        "_" +
-        crypto.randomBytes(4).toString("hex")
-    );
-}
-
-/* =========================
-   HÀM TẠO CHỮ KÝ
-========================= */
-
-function createSign({
-    code,
-    command,
-    partnerId,
-    requestId,
-    serial,
-    telco
-}) {
-    const rawSign =
-        PARTNER_KEY +
-        code +
-        command +
-        partnerId +
-        requestId +
-        serial +
-        telco;
-
-    return crypto
-        .createHash("md5")
-        .update(rawSign, "utf8")
-        .digest("hex");
-}
-
-/* =========================
-   API NẠP THẺ
-========================= */
+// ================================
+// NẠP THẺ
+// ================================
 
 app.post("/api/nap-the", async (req, res) => {
-
     try {
+        const {
+            telco,
+            code,
+            serial,
+            amount,
+            uid
+        } = req.body;
 
-        /* -------------------------
-           KIỂM TRA CẤU HÌNH
-        ------------------------- */
+        // ----------------------------
+        // Kiểm tra cấu hình server
+        // ----------------------------
 
         if (!PARTNER_ID || !PARTNER_KEY) {
+            console.error("Thiếu PARTNER_ID hoặc PARTNER_KEY");
+
             return res.status(500).json({
                 status: 0,
-                message:
-                    "Server chưa cấu hình Partner ID/Partner Key."
+                success: false,
+                message: "Server chưa được cấu hình Partner ID/Partner Key."
             });
         }
 
-        /* -------------------------
-           LẤY DỮ LIỆU
-        ------------------------- */
+        // ----------------------------
+        // Kiểm tra dữ liệu đầu vào
+        // ----------------------------
 
-        const uid = String(
-            req.body.uid || ""
-        ).trim();
-
-        const telco = String(
-            req.body.telco || ""
-        ).trim().toUpperCase();
-
-        const code = String(
-            req.body.code || ""
-        ).trim();
-
-        const serial = String(
-            req.body.serial || ""
-        ).trim();
-
-        const amount = String(
-            req.body.amount || ""
-        ).trim();
-
-        /* -------------------------
-           KIỂM TRA UID
-        ------------------------- */
-
-        if (!uid) {
+        if (!uid || !telco || !code || !serial || !amount) {
             return res.status(400).json({
                 status: 0,
-                message: "Vui lòng nhập UID."
+                success: false,
+                message: "Vui lòng nhập đầy đủ thông tin."
             });
         }
 
-        if (!/^[0-9]+$/.test(uid)) {
+        // UID chỉ cho phép số
+        if (!/^\d{5,20}$/.test(String(uid))) {
             return res.status(400).json({
                 status: 0,
-                message: "UID chỉ được chứa số."
-            });
-        }
-
-        if (uid.length < 5 || uid.length > 20) {
-            return res.status(400).json({
-                status: 0,
+                success: false,
                 message: "UID không hợp lệ."
             });
         }
 
-        /* -------------------------
-           KIỂM TRA NHÀ MẠNG
-        ------------------------- */
+        // ----------------------------
+        // Chuẩn hóa dữ liệu
+        // ----------------------------
 
-        if (!ALLOWED_TELCOS.includes(telco)) {
+        const normalizedTelco = String(telco).trim().toUpperCase();
+        const normalizedCode = String(code).trim();
+        const normalizedSerial = String(serial).trim();
+        const normalizedAmount = String(amount).trim();
+
+        const allowedTelcos = [
+            "VIETTEL",
+            "GARENA",
+            "MOBIFONE",
+            "VINAPHONE"
+        ];
+
+        if (!allowedTelcos.includes(normalizedTelco)) {
             return res.status(400).json({
                 status: 0,
+                success: false,
                 message: "Nhà mạng không hợp lệ."
             });
         }
 
-        /* -------------------------
-           KIỂM TRA MÃ THẺ
-        ------------------------- */
+        // ----------------------------
+        // Tạo request ID
+        // ----------------------------
 
-        if (!code) {
-            return res.status(400).json({
-                status: 0,
-                message: "Vui lòng nhập mã thẻ."
-            });
-        }
-
-        if (!/^[0-9]+$/.test(code)) {
-            return res.status(400).json({
-                status: 0,
-                message: "Mã thẻ chỉ được chứa số."
-            });
-        }
-
-        /* -------------------------
-           KIỂM TRA SERIAL
-        ------------------------- */
-
-        if (!serial) {
-            return res.status(400).json({
-                status: 0,
-                message: "Vui lòng nhập serial."
-            });
-        }
-
-        if (!/^[0-9]+$/.test(serial)) {
-            return res.status(400).json({
-                status: 0,
-                message: "Serial chỉ được chứa số."
-            });
-        }
-
-        /* -------------------------
-           KIỂM TRA MỆNH GIÁ
-        ------------------------- */
-
-        if (!ALLOWED_AMOUNTS.includes(amount)) {
-            return res.status(400).json({
-                status: 0,
-                message: "Mệnh giá không được hỗ trợ."
-            });
-        }
-
-        /* -------------------------
-           TẠO REQUEST ID
-        ------------------------- */
-
-        const request_id = createRequestId();
+        const request_id =
+            "FF_" +
+            Date.now() +
+            "_" +
+            crypto.randomBytes(4).toString("hex");
 
         const command = "charging";
 
-        /* -------------------------
-           TẠO SIGN
-        ------------------------- */
+        // ----------------------------
+        // Tạo chữ ký
+        // ----------------------------
 
-        const sign = createSign({
-            code,
-            command,
-            partnerId: PARTNER_ID,
-            requestId: request_id,
-            serial,
-            telco
-        });
+        const rawSign =
+            PARTNER_KEY +
+            normalizedCode +
+            command +
+            PARTNER_ID +
+            request_id +
+            normalizedSerial +
+            normalizedTelco;
 
-        /* -------------------------
-           TẠO FORM DATA
-        ------------------------- */
+        const sign = crypto
+            .createHash("md5")
+            .update(rawSign)
+            .digest("hex");
+
+        // ----------------------------
+        // Gửi API
+        // ----------------------------
 
         const params = new URLSearchParams();
 
-        params.append(
-            "command",
-            command
-        );
+        params.append("command", command);
+        params.append("partner_id", PARTNER_ID);
+        params.append("request_id", request_id);
+        params.append("telco", normalizedTelco);
+        params.append("amount", normalizedAmount);
+        params.append("serial", normalizedSerial);
+        params.append("code", normalizedCode);
+        params.append("sign", sign);
 
-        params.append(
-            "partner_id",
-            PARTNER_ID
-        );
-
-        params.append(
-            "request_id",
-            request_id
-        );
-
-        params.append(
-            "telco",
-            telco
-        );
-
-        params.append(
-            "amount",
-            amount
-        );
-
-        params.append(
-            "serial",
-            serial
-        );
-
-        params.append(
-            "code",
-            code
-        );
-
-        params.append(
-            "sign",
-            sign
-        );
-
-        /* -------------------------
-           GỌI API ĐỐI TÁC
-        ------------------------- */
-
-        console.log(
-            `[${request_id}] Gửi yêu cầu charging`
-        );
+        console.log("Charging request:", {
+            request_id,
+            uid,
+            telco: normalizedTelco,
+            amount: normalizedAmount
+        });
 
         const response = await axios.post(
             API_URL,
@@ -340,177 +172,97 @@ app.post("/api/nap-the", async (req, res) => {
                     "Content-Type":
                         "application/x-www-form-urlencoded"
                 },
-
-                timeout: 15000,
-
-                validateStatus: () => true
+                timeout: 30000
             }
         );
 
-        /* -------------------------
-           LOG KẾT QUẢ
-        ------------------------- */
-
         console.log(
-            `[${request_id}] HTTP:`,
-            response.status
-        );
-
-        console.log(
-            `[${request_id}] Response:`,
+            "Gachthe1s response:",
             response.data
         );
 
-        /* -------------------------
-           API TRẢ LỖI HTTP
-        ------------------------- */
+        // ----------------------------
+        // Xử lý phản hồi
+        // ----------------------------
 
-        if (
-            response.status < 200 ||
-            response.status >= 300
-        ) {
-            return res.status(502).json({
-                status: 0,
-                message:
-                    "API đối tác trả về lỗi HTTP.",
-                request_id,
-                http_status:
-                    response.status,
-                data:
-                    response.data
-            });
-        }
+        const data = response.data || {};
 
-        /* -------------------------
-           TRẢ KẾT QUẢ CHO WEBSITE
-        ------------------------- */
+        const status = String(
+            data.status ?? data.success ?? ""
+        );
+
+        const success =
+            status === "1" ||
+            data.status === 1 ||
+            data.success === true;
 
         return res.status(200).json({
-            ...response.data,
-            request_id
+            status: success ? 1 : 0,
+            success,
+            message:
+                data.message ||
+                data.msg ||
+                "Hệ thống đã nhận phản hồi.",
+            request_id,
+            provider_response: data
         });
 
     } catch (error) {
 
         console.error(
-            "❌ Lỗi /api/nap-the:",
-            error.message
+            "API ERROR:",
+            error.response?.data || error.message
         );
-
-        if (error.code === "ECONNABORTED") {
-            return res.status(504).json({
-                status: 0,
-                message:
-                    "API đối tác phản hồi quá lâu. Vui lòng thử lại sau."
-            });
-        }
 
         if (error.response) {
-
-            console.error(
-                "API error response:",
-                error.response.data
-            );
-
             return res.status(502).json({
                 status: 0,
+                success: false,
                 message:
-                    "API đối tác trả về lỗi.",
-                data:
-                    error.response.data
+                    error.response.data?.message ||
+                    error.response.data?.msg ||
+                    "Cổng thanh toán trả về lỗi.",
+                provider_response:
+                    error.response.data || null
             });
         }
-
-        return res.status(502).json({
-            status: 0,
-            message:
-                "Không thể kết nối tới API đối tác."
-        });
-    }
-});
-
-/* =========================
-   CALLBACK
-========================= */
-
-/*
-   Endpoint này dành cho callback từ hệ thống
-   đối tác nếu tài liệu API yêu cầu callback.
-
-   KHÔNG tự suy đoán chữ ký callback.
-   Nếu Gachthe1s yêu cầu xác thực callback,
-   cần dùng đúng công thức trong tài liệu API.
-*/
-
-app.post("/api/callback", async (req, res) => {
-
-    try {
-
-        console.log(
-            "========== CALLBACK =========="
-        );
-
-        console.log(
-            "Callback data:",
-            req.body
-        );
-
-        console.log(
-            "=============================="
-        );
-
-        return res.json({
-            status: 1,
-            message: "Callback received."
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Callback error:",
-            error.message
-        );
 
         return res.status(500).json({
             status: 0,
-            message: "Callback error."
+            success: false,
+            message:
+                "Không thể kết nối tới cổng thanh toán."
         });
     }
 });
 
-/* =========================
-   XỬ LÝ ROUTE KHÔNG TỒN TẠI
-========================= */
+// ================================
+// 404
+// ================================
 
 app.use((req, res) => {
-
     res.status(404).json({
         status: 0,
-        message: "API endpoint không tồn tại."
+        message: "Không tìm thấy API."
     });
-
 });
 
-/* =========================
-   KHỞI ĐỘNG SERVER
-========================= */
+// ================================
+// START
+// ================================
 
 app.listen(PORT, () => {
-
     console.log(
-        `✅ Server đang chạy tại port ${PORT}`
+        `Server running on port ${PORT}`
     );
 
     console.log(
-        `Partner ID: ${PARTNER_ID || "CHƯA CẤU HÌNH"}`
+        "Partner ID configured:",
+        Boolean(PARTNER_ID)
     );
 
     console.log(
-        `Partner Key: ${
-            PARTNER_KEY
-                ? "ĐÃ CẤU HÌNH"
-                : "CHƯA CẤU HÌNH"
-        }`
+        "Partner Key configured:",
+        Boolean(PARTNER_KEY)
     );
-
 });
