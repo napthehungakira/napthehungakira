@@ -8,8 +8,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const PARTNER_ID = "85251846982";
-const PARTNER_KEY = "43092bddb54714b17e52d92047f3868c";
+// Đã cập nhật đúng thông tin Partner ID và Partner Key từ Gachthe1s của bạn
+const PARTNER_ID = "2836866755";
+const PARTNER_KEY = "e3c434a49e4b1279f0dc40a46b7e07a9e";
 
 app.post('/api/nap-the', async (req, res) => {
     try {
@@ -20,11 +21,9 @@ app.post('/api/nap-the', async (req, res) => {
         }
 
         const request_id = "FF_" + Date.now() + Math.floor(Math.random() * 900 + 100);
-        
-        // Đổi lại command chính xác theo tài liệu The9p là "charging"
         const command = "charging";
 
-        // Công thức tạo chữ ký sign chuẩn MD5 từ tài liệu: partner_key + code + command + partner_id + request_id + serial + telco
+        // Tạo chữ ký MD5 chuẩn theo API gạch thẻ
         const rawSign = PARTNER_KEY + code + command + PARTNER_ID + request_id + serial + telco;
         const sign = crypto.createHash('md5').update(rawSign).digest('hex');
 
@@ -39,12 +38,13 @@ app.post('/api/nap-the', async (req, res) => {
             sign
         });
 
-        const response = await axios.post('https://www.the9p.com/chargingws/v2', params);
+        // Endpoint chính thức của hệ thống Gachthe1s
+        const response = await axios.post('https://gachthe1s.com/chargingws/v2', params);
         return res.json(response.data);
 
     } catch (error) {
         console.error("Lỗi server:", error.message);
-        return res.json({ status: 0, message: 'Lỗi kết nối đến cổng thanh toán The9p!' });
+        return res.json({ status: 0, message: 'Lỗi kết nối đến cổng thanh toán Gachthe1s!' });
     }
 });
 
