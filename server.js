@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// Thông tin chuẩn từ Gachthe1s của bạn
+// Đã sửa đúng Partner Key khớp hoàn toàn với Gachthe1s
 const PARTNER_ID = "2836866755";
 const PARTNER_KEY = "e3c434a49e4b1279f0dc40a6b7e07a9e";
 
